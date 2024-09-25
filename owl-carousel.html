@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://owlcarousel2.github.io/OwlCarousel2/assets/owlcarousel/assets/owl.carousel.min.css"
+        rel="stylesheet">
+    <link href="https://owlcarousel2.github.io/OwlCarousel2/assets/owlcarousel/assets/owl.theme.default.min.css"
+        rel="stylesheet">
+
+        <style>
+            .item{
+                background-color: red;
+                height: 400px;
+            }
+        </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="owl-carousel owl-theme" id="slider1">
+            <div class="item">1 hello</div>
+            <div class="item">2 hello</div>
+            <div class="item">3 hello</div>
+            <div class="item">4 hello</div>
+            <div class="item">5 hello</div>
+            <div class="item">6 hello</div>
+            <div class="item">7 hello</div>
+            <div class="item">8 hello</div>
+            <div class="item">9 hello</div>
+            <div class="item">10 hello</div>
+        </div>
+    </div>
+
+
+    <script src="https://owlcarousel2.github.io/OwlCarousel2/assets/vendors/jquery.min.js">
+    </script>
+    <script src="https://owlcarousel2.github.io/OwlCarousel2/assets/owlcarousel/owl.carousel.js">
+    </script>
+
+    <script>
+        $('#slider1').owlCarousel({
+            loop: true,
+            margin: 10,
+            responsiveClass: true,
+            nav:false,
+            dots:false,
+            center:true,
+            mouseDrag:false,
+            autoplay:true,
+            autoplayTimeout:1200,
+            smartSpeed:1000,
+            autoplayHoverPause:true,
+            responsive: {
+                0: {
+                    items: 1,
+                    // nav: false
+                },
+                600: {
+                    items: 3,
+                    // nav: false
+                },
+                1000: {
+                    items: 5,
+                    nav: true,
+                    // loop: false
+                },
+                // 1300:{
+                //     items:7
+                // }
+            }
+        })
+    </script>
+</body>
+
+</html>
