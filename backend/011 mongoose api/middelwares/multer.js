@@ -1,14 +1,17 @@
 const multer = require("multer");
 const path = require('path');
 
-const uploads = multer({storage: multer.diskStorage({
+const storage =(foldername)=> multer.diskStorage({
+
     destination: (req, file, cb) => {
-        cb(null, 'uploads');
+        cb(null, `uploads/${foldername}`);
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + Math.floor(Math.random() * 99999) + path.extname(file.originalname))
     }
-})}).fields([
+})
+
+const uploads = (foldername)=> multer({storage: storage(foldername)}).fields([
     {
         name: 'images',
         maxCount: 5
