@@ -1,12 +1,36 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
 function App() {
   const nav = useNavigate();
 
- 
+  const [user, setUser] = useState({});
+
+  useEffect(()=>{
+    let adminData = Cookies.get('admin_109');
+
+    if(adminData) return nav('/dashboard');
+  },[]);
+
+
+ const handleLogin = ()=>{
+
+  axios.post('http://localhost:4400/api/admin-panel/admin/login', user)
+  .then((response)=>{
+    console.log(response.data);
+
+    Cookies.set('admin_109', JSON.stringify(response.data.data));
+
+    nav('/dashboard');
+  })
+  .catch((error)=>{
+    // alert(response.data.message)
+    // if()
+    alert(error.response.data.message);
+  })
+ }
 
 
   return (
@@ -28,6 +52,7 @@ function App() {
             type="text"
             placeholder="Enter your email"
             className="p-[10px] rounded-[5px] border input"
+            onChange={(e)=>{setUser({...user, email:e.target.value})}}
           />
         </div>
         <div className="w-full  grid grid-cols-[20%_auto] my-[10px]">
@@ -43,19 +68,19 @@ function App() {
             type="password"
             placeholder="Enter your password"
             className="p-[10px] input border rounded-[5px]"
+            onChange={(e)=>{setUser({...user, password:e.target.value})}}
           />
         </div>
         <div className="w-full my-[50px] flex justify-between items-center">
-        <Link to='/dashboard'>
             <button
               type="button"
+              onClick={handleLogin}
               className="w-[130px] bg-purple-600 text-white h-[40px] rounded-[5px] text-[18px] font-[400]"
             >
           
               Login
             </button>
 
-            </Link>
           <Link to="/reset-password">
             <span className="text-[#5351c9] mr-[50px]">Forgot password?</span>
           </Link>

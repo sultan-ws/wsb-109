@@ -1,6 +1,10 @@
 //admin controllers
-const { testAdmin } = require("./admin-panel/adminControllers");
+const {
+    testAdmin,
+    adminLogin
+} = require("./admin-panel/adminControllers");
 
 module.exports = {
-    testAdmin
+    testAdmin,
+    adminLogin
 }

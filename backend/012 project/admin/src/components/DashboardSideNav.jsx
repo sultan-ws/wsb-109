@@ -13,10 +13,14 @@ import { RxCountdownTimer } from "react-icons/rx";
 import { MdBorderColor } from "react-icons/md";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { CiLogout } from "react-icons/ci";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { NavToggle } from "../Context/Context";
+import Cookies from 'js-cookie';
 
 function DashboardSideNav() {
+
+  const nav = useNavigate();
+
   let [size, setSize] = useState(false);
   let [color, setColor] = useState(false);
   let [category, setCategory] = useState(false);
@@ -26,6 +30,12 @@ function DashboardSideNav() {
   let [slider, setSlider] = useState(false);
 
   let { navVisible } = useContext(NavToggle);
+
+  const handleLogout = ()=>{
+    Cookies.remove('admin_109');
+    nav('/');
+  }
+
   return (
     <div
       className={
@@ -314,7 +324,7 @@ function DashboardSideNav() {
         <Link to='/'>
           <span className="block p-[12px_0]">
             {" "}
-            <CiLogout className="text-[25px] text-[#ffffff6a] hover:text-[#ffffff9a] mx-[20px] cursor-pointer" />
+            <CiLogout onClick={handleLogout} className="text-[25px] text-[#ffffff6a] hover:text-[#ffffff9a] mx-[20px] cursor-pointer" />
           </span>
         </Link>
       </div>

@@ -20,6 +20,17 @@ function Header() {
   let [width, setWidth] = useState(false);
   let [profileDropDown, setProfileDropDown] = useState(false);
 
+  useEffect(()=>{
+    let adminData = Cookies.get('admin_109');
+
+    if(!adminData) return nav('/');
+  },[]);
+
+  const handleLogout = ()=>{
+    Cookies.remove('admin_109');
+    nav('/');
+  }
+
 
   return (
     <div
@@ -73,7 +84,7 @@ function Header() {
                   <CiLock />{" "}
                 </span>
                 <span>
-                  <button>Lock Account</button>
+                  <button onClick={handleLogout}>Lock Account</button>
                 </span>
               </li>
           </ul>
