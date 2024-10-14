@@ -1,10 +1,11 @@
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const Swal = require('sweetalert2');
 
 const AddCategory = () => {
   const nav = useNavigate();
+
 
   const handleCreateCategory = async (e) => {
     e.preventDefault();
@@ -41,6 +42,26 @@ const AddCategory = () => {
       })
       .catch((error) => {
         console.log(error);
+        console.log(error.status === 400);
+        if(error.status === 400){
+          Swal.fire({
+            title: "This Category Already Exists",
+            showClass: {
+              popup: `
+                animate__animated
+                animate__fadeInUp
+                animate__faster
+              `
+            },
+            hideClass: {
+              popup: `
+                animate__animated
+                animate__fadeOutDown
+                animate__faster
+              `
+            }
+          });
+        }
       })
   }
 

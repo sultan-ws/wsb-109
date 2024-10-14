@@ -5,6 +5,7 @@ import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import 'react-tooltip/dist/react-tooltip.css'
 import { Tooltip } from 'react-tooltip'
+import Swal from 'sweetalert2'
 
 const ViewCategory = () => {
   let [show1, setShow1] = useState(false);
@@ -13,6 +14,32 @@ const ViewCategory = () => {
   let [show4, setShow4] = useState(false);
 
   const [categories, setCategories] = useState([]);
+  const [checkedCategories, setCheckedCategories] = useState([]);
+  const [ifAllchecked, setAllChecked] = useState(false);
+
+  const handleCheckCategory = (e)=>{
+    if(e.target.checked){
+      setCheckedCategories([...checkedCategories, e.target.value]);
+    } else{
+      setCheckedCategories((pre)=>(
+        pre.filter((item)=>item !== e.target.value)
+      ))
+    }
+  };
+
+  const handleCheckAll = (e)=>{
+    setAllChecked(e.target.checked);
+    if(e.target.checked){
+      setCheckedCategories([...categories.map((item)=>item._id)]);
+    }
+    else{
+      setCheckedCategories([]);
+    }
+  };
+
+  useEffect(()=>{
+    setAllChecked(categories.length === checkedCategories.length && checkedCategories.length !== 0);
+  },[checkedCategories]);
 
   const fetchCategories = () => {
     axios.get('http://localhost:4400/api/admin-panel/parent-category/read-categories')
@@ -27,21 +54,21 @@ const ViewCategory = () => {
 
   useEffect(() => { fetchCategories() }, []);
 
-  const handleUpdateStatus = (e)=>{
+  const handleUpdateStatus = (e) => {
     // console.log(e.target.value, e.target.textContent);
     const status = (e.target.textContent !== 'Active')
 
-    axios.put(`http://localhost:4400/api/admin-panel/parent-category/update-status/${e.target.value}`,{status})
+    axios.put(`http://localhost:4400/api/admin-panel/parent-category/update-status/${e.target.value}`, { status })
       .then((response) => {
         console.log(response.data);
         // fetchCategories();
 
-        setCategories((pre)=>(
-          pre.map((category)=>{
-            if(category._id === e.target.value){
-              return {...category, status: status }
+        setCategories((pre) => (
+          pre.map((category) => {
+            if (category._id === e.target.value) {
+              return { ...category, status: status }
             }
-            else{
+            else {
               return category
             }
           })
@@ -50,6 +77,75 @@ const ViewCategory = () => {
       .catch((error) => {
         console.log(error);
       })
+  }
+
+  const handleDeleteCategory = (id) => {
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+        axios.put(`http://localhost:4400/api/admin-panel/parent-category/delete-category/${id}`)
+          .then((response) => {
+            console.log(response.data);
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success"
+            });
+            fetchCategories();
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+
+
+      }
+    });
+
+
+  };
+
+  const handleMultiDelete = ()=>{
+    console.log(checkedCategories);
+
+    // return;
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+        axios.put(`http://localhost:4400/api/admin-panel/parent-category/delete-categories`,{checkedCategories})
+          .then((response) => {
+            console.log(response.data);
+            setCheckedCategories([]);
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success"
+            });
+            fetchCategories();
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+
+
+      }
+    });
   }
 
 
@@ -65,15 +161,15 @@ const ViewCategory = () => {
               <th>
                 <button
                   className="bg-red-400 rounded-sm px-2 py-1"
-
+                  onClick={handleMultiDelete}
                 >Delete</button>
                 <input
                   type="checkbox"
                   name="deleteAll"
                   id="deleteAllCat"
-
+                  onClick={handleCheckAll}
                   className="accent-[#5351c9]"
-
+                  checked={ifAllchecked}
                 />
               </th>
               <th>Sno</th>
@@ -92,9 +188,10 @@ const ViewCategory = () => {
                       type="checkbox"
                       name="delete"
                       id="delete1"
-
+                      value={category._id}
+                      onClick={handleCheckCategory}
                       className="accent-[#5351c9] cursor-pointer"
-
+                      checked={checkedCategories.includes(category._id)}
                     />
                   </td>
                   <td>{index + 1}</td>
@@ -118,17 +215,17 @@ const ViewCategory = () => {
                     )}
                   </td>
                   <td>
-                    <MdDelete className="my-[5px] text-red-500 cursor-pointer inline" />{" "}
+                    <MdDelete onClick={() => { handleDeleteCategory(category._id) }} className="my-[5px] text-red-500 cursor-pointer inline" />{" "}
                     |{" "}
                     <Link to={`/dashboard/category/update-category/${'parentCategory._id'}`}>
                       <CiEdit className="my-[5px] text-yellow-500 cursor-pointer inline" />
                     </Link>
                   </td>
                   <td>
-                  <Tooltip id="status-tooltip" />
+                    <Tooltip id="status-tooltip" />
                     <button
-                    value={category._id}
-                    onClick={handleUpdateStatus}
+                      value={category._id}
+                      onClick={handleUpdateStatus}
                       data-tooltip-id="status-tooltip" data-tooltip-content={(!category.status) ? 'Click to Active' : 'Click to Inactive'}
                       className={`p-[4px_10px] rounded-sm  text-white ${(category.status) ? 'bg-green-400' : 'bg-red-400'}`}
                     >

@@ -6,7 +6,9 @@ const {
 const {
     readParentCategory,
     createParentCategory,
-    updateStatusParentCategory
+    updateStatusParentCategory,
+    deleteParentCategory,
+    deleteMultipleParentCategories
 } = require("./admin-panel/parentCategoryControllers");
 
 module.exports = {
@@ -14,5 +16,7 @@ module.exports = {
     adminLogin,
     createParentCategory,
     readParentCategory,
-    updateStatusParentCategory
+    updateStatusParentCategory,
+    deleteParentCategory,
+    deleteMultipleParentCategories
 }
