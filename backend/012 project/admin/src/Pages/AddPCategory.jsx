@@ -2,6 +2,20 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 const AddPCategory = () => {
+  const [parentCategory, setParentCategory] = useState([]);
+
+  const fetchParentCategory = ()=>{
+    axios.get(`http://localhost:4400/api/admin-panel/parent-category/active-category`)
+    .then((response) => {
+      console.log(response.data);
+      setParentCategory(response.data.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  };
+
+  useEffect(()=>{fetchParentCategory()},[]);
   
 
   return (
@@ -38,12 +52,26 @@ const AddPCategory = () => {
             <label htmlFor="categoryImg" className="block text-[#303640]">
               Parent Category
             </label>
-            <select name="parent_category" id="" className="border w-full rounded-[5px] my-[10px] category input">
+            <select name="parent_category"  id="" className="border p-1 w-full rounded-[5px] my-[10px] category input">
+              {
+                parentCategory.map((category)=>(
+                  <option value={category._id}>{category.name}</option>
+                ))
+              }
              
-              <option>men</option>
-              <option>women</option>
-              <option>kids</option>
             </select>
+          </div>
+          <div className="w-full my-[10px]">
+            <label htmlFor="categorySlug" className="block text-[#303640]">
+              Category Slug
+            </label>
+            <input
+              type="text"
+              name="slug"
+              id="categorySlug"
+              placeholder="Category Slug"
+              className="input border p-1 w-full rounded-[5px] my-[10px]"
+            />
           </div>
           <div className="w-full my-[10px]">
             <label htmlFor="categoryDesc" className="block text-[#303640]">
@@ -81,8 +109,8 @@ const AddPCategory = () => {
             <span>Hide</span>
           </div>
           <div className="w-full my-[20px] ">
-            <button type="submit" className="bg-[#5351c9] rounded-md text-white w-[100px] h-[35px]">
-              Add Size
+            <button type="submit" className="bg-[#5351c9] rounded-md text-white px-4 h-[35px]">
+              Add Category
             </button>
           </div>
         </form>

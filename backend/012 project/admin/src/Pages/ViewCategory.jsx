@@ -5,7 +5,11 @@ import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import 'react-tooltip/dist/react-tooltip.css'
 import { Tooltip } from 'react-tooltip'
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
+import 'react-responsive-modal/styles.css';
+import { Modal } from 'react-responsive-modal';
+import { BiRecycle } from "react-icons/bi";
+import { IoTrashBin } from "react-icons/io5";
 
 const ViewCategory = () => {
   let [show1, setShow1] = useState(false);
@@ -13,7 +17,11 @@ const ViewCategory = () => {
   let [show3, setShow3] = useState(false);
   let [show4, setShow4] = useState(false);
 
+  const [open, setOpen] = useState(false);
+
+
   const [categories, setCategories] = useState([]);
+  const [deletedCategories, setDeletedCategories] = useState([]);
   const [checkedCategories, setCheckedCategories] = useState([]);
   const [ifAllchecked, setAllChecked] = useState(false);
 
@@ -44,7 +52,7 @@ const ViewCategory = () => {
   const fetchCategories = () => {
     axios.get('http://localhost:4400/api/admin-panel/parent-category/read-categories')
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setCategories(response.data.data);
       })
       .catch((error) => {
@@ -52,7 +60,18 @@ const ViewCategory = () => {
       })
   };
 
-  useEffect(() => { fetchCategories() }, []);
+  const fetchDeletedCategories = () => {
+    axios.get('http://localhost:4400/api/admin-panel/parent-category/deleted-categories')
+      .then((response) => {
+        console.log(response.data);
+        setDeletedCategories(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+  };
+
+  useEffect(() => { fetchCategories(); fetchDeletedCategories(); }, []);
 
   const handleUpdateStatus = (e) => {
     // console.log(e.target.value, e.target.textContent);
@@ -146,14 +165,75 @@ const ViewCategory = () => {
 
       }
     });
+  };
+
+  const handleRecoverCategory = (id)=>{
+    axios.put(`http://localhost:4400/api/admin-panel/parent-category/recover-category/${id}`)
+      .then((response) => {
+        console.log(response.data);
+        setOpen(false);
+        
+        Swal.fire({
+          title: "Category  Recovered!",
+          text: "Your file has been recovered.",
+          icon: "success"
+        });
+        fetchCategories();
+       fetchDeletedCategories();
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   }
 
 
   return (
     <div className="w-[90%] mx-auto my-[150px] bg-white rounded-[10px] border">
-      <span className="block h-[40px] bg-[#f8f8f9] text-[20px] text-[#303640] p-[8px_16px] border-b rounded-[10px_10px_0_0]">
+      <span className="flex justify-between h-[40px] bg-[#f8f8f9] text-[20px] text-[#303640] p-[8px_16px] border-b rounded-[10px_10px_0_0]">
         View Category
+        <IoTrashBin className="cursor-pointer" onClick={()=>{setOpen(true)}} />
       </span>
+      
+      <Modal open={open} onClose={() => setOpen(false)} center>
+      <table className="w-full">
+          <thead>
+            <tr className="text-left border-b">
+              <th>
+                <button
+                  className="bg-red-400 rounded-sm px-2 py-1"
+                >Empty Bin</button>
+              </th>
+              <th>Sno</th>
+              <th>Category Name</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              deletedCategories.map((category, index) => (
+                <tr className="border-b" key={index}>
+                  <td>
+                   
+                  </td>
+                  <td>{index + 1}</td>
+                  <td>{category.name}</td>
+                  <td>
+                    <MdDelete className="my-[5px] text-red-500 cursor-pointer inline" />{" "}
+                    |{" "}
+
+                      <BiRecycle onClick={()=>{handleRecoverCategory(category._id)}} className="my-[5px] text-yellow-500 cursor-pointer inline" />
+
+                  </td>
+                </tr>
+              ))
+            }
+
+
+
+
+          </tbody>
+        </table>
+      </Modal>
       <div className="w-[90%] mx-auto my-[20px]">
         <table className="w-full">
           <thead>
@@ -217,7 +297,7 @@ const ViewCategory = () => {
                   <td>
                     <MdDelete onClick={() => { handleDeleteCategory(category._id) }} className="my-[5px] text-red-500 cursor-pointer inline" />{" "}
                     |{" "}
-                    <Link to={`/dashboard/category/update-category/${'parentCategory._id'}`}>
+                    <Link to={`/dashboard/category/update-category/${category._id}`}>
                       <CiEdit className="my-[5px] text-yellow-500 cursor-pointer inline" />
                     </Link>
                   </td>

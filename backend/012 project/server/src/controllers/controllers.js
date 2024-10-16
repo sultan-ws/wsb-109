@@ -8,7 +8,12 @@ const {
     createParentCategory,
     updateStatusParentCategory,
     deleteParentCategory,
-    deleteMultipleParentCategories
+    deleteMultipleParentCategories,
+    parentCategoryById,
+    updateParentCategory,
+    deletedParentCategory,
+    recoverParentCategory,
+    activeParentCategory
 } = require("./admin-panel/parentCategoryControllers");
 
 module.exports = {
@@ -18,5 +23,10 @@ module.exports = {
     readParentCategory,
     updateStatusParentCategory,
     deleteParentCategory,
-    deleteMultipleParentCategories
+    deleteMultipleParentCategories,
+    parentCategoryById,
+    updateParentCategory,
+    deletedParentCategory,
+    recoverParentCategory,
+    activeParentCategory
 }
