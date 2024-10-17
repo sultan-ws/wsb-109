@@ -19,6 +19,10 @@ const categorySchema = new mongoose.Schema({
         type:Boolean,
         default:true
     },
+    is_featured:{
+        type:Boolean,
+        default:false
+    },
     created_at:Date,
     updated_at:Date,
     deleted_at:{

@@ -1,7 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+const Swal = require('sweetalert2');
 
 const AddPCategory = () => {
+  const nav = useNavigate();
   const [parentCategory, setParentCategory] = useState([]);
 
   const fetchParentCategory = ()=>{
@@ -16,6 +19,40 @@ const AddPCategory = () => {
   };
 
   useEffect(()=>{fetchParentCategory()},[]);
+
+  const handleCreateCategory = (e)=>{
+    e.preventDefault();
+
+    axios.post(`http://localhost:4400/api/admin-panel/product-category/create-category`, e.target)
+    .then((response) => {
+      console.log(response.data);
+
+      let timerInterval;
+      Swal.fire({
+        title: "Category Created!",
+        html: "You are fredirecting to view category in <b></b> milliseconds.",
+        timer: 1000,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+          const timer = Swal.getPopup().querySelector("b");
+          timerInterval = setInterval(() => {
+            timer.textContent = `${Swal.getTimerLeft()}`;
+          }, 100);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+        }
+      }).then((result) => {
+        nav('/dashboard/products/view-category');
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+
+
+  }
   
 
   return (
@@ -24,7 +61,7 @@ const AddPCategory = () => {
         Add Category
       </span>
       <div className="w-[90%] mx-auto my-[20px]">
-        <form method="post" >
+        <form method="post" onSubmit={handleCreateCategory}>
           <div className="w-full my-[10px]">
             <label htmlFor="categoryName" className="block text-[#303640]">
               Category Name
@@ -86,6 +123,30 @@ const AddPCategory = () => {
           </div>
           <div className="w-full my-[10px]">
             <label
+              htmlFor="is_featured"
+              className=" text-[#303640] mr-[20px]"
+            >
+              Is Featured
+            </label>
+            <input
+              type="radio"
+              name="is_featured"
+              id="is_featured"
+              value={true}
+              className="input my-[10px] mx-[10px] accent-[#5351c9] cursor-pointer"
+            />
+            <span>Featured category</span>
+            <input
+              type="radio"
+              name="is_featured"
+              id="is_featured"
+              value={false}
+              className="input my-[10px] mx-[10px] accent-[#5351c9] cursor-pointer"
+            />
+            <span>Not Featured category</span>
+          </div>
+          <div className="w-full my-[10px]">
+            <label
               htmlFor="categoryStatus"
               className=" text-[#303640] mr-[20px]"
             >
@@ -95,7 +156,7 @@ const AddPCategory = () => {
               type="radio"
               name="status"
               id="categoryStatus"
-              
+              value={true}
               className="input my-[10px] mx-[10px] accent-[#5351c9] cursor-pointer"
             />
             <span>Display</span>
@@ -103,7 +164,7 @@ const AddPCategory = () => {
               type="radio"
               name="status"
               id="categoryStatus"
-              
+              value={false}
               className="input my-[10px] mx-[10px] accent-[#5351c9] cursor-pointer"
             />
             <span>Hide</span>

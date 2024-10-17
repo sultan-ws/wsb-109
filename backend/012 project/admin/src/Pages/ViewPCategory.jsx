@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -6,6 +7,19 @@ import { Link } from "react-router-dom";
 const ViewCategory = () => {
   let [show1, setShow1] = useState(false);
   let [show2, setShow2] = useState(false);
+
+  const fetchCategories = ()=>{
+    axios.get(`http://localhost:4400/api/admin-panel/product-category/read-categories`)
+    .then((response) => {
+      console.log(response.data);  
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  };
+
+  useEffect(()=>{fetchCategories()},[]);
+
   return (
     <div className="w-[90%] mx-auto my-[150px] bg-white rounded-[10px] border">
       <span className="block h-[40px] bg-[#f8f8f9] text-[20px] text-[#303640] p-[8px_16px] border-b rounded-[10px_10px_0_0]">

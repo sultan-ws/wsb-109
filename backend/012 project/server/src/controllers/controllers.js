@@ -3,6 +3,8 @@ const {
     testAdmin,
     adminLogin
 } = require("./admin-panel/adminControllers");
+
+//parent category controllers
 const {
     readParentCategory,
     createParentCategory,
@@ -16,6 +18,12 @@ const {
     activeParentCategory
 } = require("./admin-panel/parentCategoryControllers");
 
+// product category controllers
+const {
+    createProductCategory,
+    readProductCategories
+} = require("./admin-panel/productCategoryControllers");
+
 module.exports = {
     testAdmin,
     adminLogin,
@@ -28,5 +36,7 @@ module.exports = {
     updateParentCategory,
     deletedParentCategory,
     recoverParentCategory,
-    activeParentCategory
+    activeParentCategory,
+    createProductCategory,
+    readProductCategories
 }
