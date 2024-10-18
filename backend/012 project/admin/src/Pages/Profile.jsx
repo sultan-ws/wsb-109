@@ -13,7 +13,26 @@ import { useNavigate } from "react-router-dom";
 function Profile() {
 
   const [show, setShow] = useState(false);
+
+  const [admin, setAdmin] = useState({});
+  const [imgPre, setImgPre] = useState('');
+
+  useEffect(()=>{
+    const adminData = JSON.parse(Cookies.get('admin_109'));
+    console.log(adminData);
+    setAdmin(adminData);
+
+  },[]);
   
+  const handlePreview = (e)=>{
+    const reader = new FileReader();
+
+    reader.readAsDataURL(e.target.files[0]);
+    
+    reader.onload = ()=>{
+      setImgPre(reader.result);
+    }
+  }
 
   return (
     <div>
@@ -55,7 +74,7 @@ function Profile() {
                   <input
                     type="text"
                    
-                  name="instagram"
+                  name="insta"
                  
                     className="w-full border h-[35px] rounded-[5px] p-2 input"
                   />
@@ -102,7 +121,7 @@ function Profile() {
                 <div className="w-[50px] h-[50px] object-fill">
                   <img
                     src=""
-                    alt="Logo"
+                    alt="Favicon"
                     className="w-full h-full"
                   />
                 </div>
@@ -117,7 +136,7 @@ function Profile() {
                 <div className="w-[50px] h-[50px] object-fill">
                   <img
                    src=""
-                    alt="Logo"
+                    alt="Footer_icon"
                     className="w-full h-full"
                   />
                 </div>
@@ -152,12 +171,20 @@ function Profile() {
           <div className="flex flex-col justify-center p-[10px] box-border items-center gap-[10px] h-[400px]">
             <div className="border border-slate-300 w-[200px] h-[200px] rounded-[50%] object-contain">
               <img
-                src="/profile.jpg"
+                src={ imgPre || '/profile.jpg'}
                 alt="profile img"
                 className="w-full h-full rounded-[50%]"
               />
             </div>
-            <span className="block text-center">Profile Image</span>
+            <div>
+            <input
+                  type='file'
+                  onChange={handlePreview}
+                  name="thumbnail"
+                  
+                  className="w-full border h-[35px] rounded-[5px] p-2 input"
+                />
+            </div>
           </div>
         </div>
       </div>

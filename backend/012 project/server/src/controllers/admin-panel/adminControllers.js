@@ -34,11 +34,11 @@ const adminLogin = async(req, res) =>{
 
         if(ifAdmin.password !== req.body.password) return res.status(400).json({message: 'invalid password'});
 
-        const {password, ...data} = ifAdmin._doc;
+        // const {password, ...data} = ifAdmin._doc;
 
-        console.log(data);
+        // console.log(data);
 
-        res.status(200).json({message: 'success', data});
+        res.status(200).json({message: 'success', ifAdmin});
     }
     catch(error){
         res.status(500).json({message: 'internal server error'});

@@ -24,7 +24,7 @@ const readProductCategories = async (req, res) =>{
     try{
         const data = await ProductCategory.find().populate('parent_category');
 
-        const filepath = `${req.protocol}://${req.get('host')}/franandoakservices/admin-panel`;
+        const filepath = `${req.protocol}://${req.get('host')}/franandoakservices/admin-panel/`;
 
         res.status(200).json({message: 'success', data, filepath});
     }
