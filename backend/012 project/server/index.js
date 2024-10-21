@@ -9,6 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/franandoakservices/admin-panel', express.static(path.join(__dirname, 'src', 'uploads','product-category' )));
+app.use('/franandoakservices/admin-panel', express.static(path.join(__dirname, 'src', 'uploads','admin' )));
 
 app.use('/api',allRoutes);
 

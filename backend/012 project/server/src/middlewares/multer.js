@@ -15,7 +15,19 @@ const uploads = (foldername)=> multer({storage: storage(foldername)})
     {
         name:'thumbnail',
         maxCount: 1
-    }
+    },
+    {
+        name:'logo',
+        maxCount: 1
+    },
+    {
+        name:'favicon',
+        maxCount: 1
+    },
+    {
+        name:'footer_icon',
+        maxCount: 1
+    },
 ]);
 
 module.exports = uploads;

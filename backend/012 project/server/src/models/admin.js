@@ -10,7 +10,7 @@ const adminSchema = new mongoose.Schema({
     password:String,
     logo:String,
     favicon:String,
-    footer_logo:String,
+    footer_icon:String,
     thumbnail:String
 });
 

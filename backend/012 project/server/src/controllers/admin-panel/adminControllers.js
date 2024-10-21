@@ -1,4 +1,6 @@
 const Admin = require("../../models/admin");
+const fs = require('fs');
+const path = require('path');
 
 const testAdmin = (req, res)=>{
     res.status(200).json({message: 'test successfull'});
@@ -36,18 +38,85 @@ const adminLogin = async(req, res) =>{
 
         // const {password, ...data} = ifAdmin._doc;
 
+        
+        if(ifAdmin.logo) ifAdmin.logo = `${req.protocol}://${req.get('host')}/franandoakservices/admin-panel/${ifAdmin.logo}`;
+        if(ifAdmin.favicon) ifAdmin.favicon = `${req.protocol}://${req.get('host')}/franandoakservices/admin-panel/${ifAdmin.favicon}`;
+        if(ifAdmin.footer_icon) ifAdmin.footer_icon = `${req.protocol}://${req.get('host')}/franandoakservices/admin-panel/${ifAdmin.footer_icon}`;
+        if(ifAdmin.thumbnail) ifAdmin.thumbnail = `${req.protocol}://${req.get('host')}/franandoakservices/admin-panel/${ifAdmin.thumbnail}`;
+
         // console.log(data);
 
-        res.status(200).json({message: 'success', ifAdmin});
+        res.status(200).json({message: 'success', data:ifAdmin});
     }
     catch(error){
+        res.status(500).json({message: 'internal server error'});
+    }
+};
+
+const updateAdmin = async (req, res) =>{
+    try{
+        const olddata = await Admin.findOne(req.params);
+        const data = req.body;
+
+        console.log(req.files);
+
+        if(req.files){
+            if(req.files.logo) {
+                data.logo = req.files.logo[0].filename;
+
+                if(fs.existsSync(`./src/uploads/admin/${olddata.logo}`)){
+                    fs.unlinkSync(`./src/uploads/admin/${olddata.logo}`);
+                }
+            }
+
+
+            if(req.files.favicon) {
+                data.favicon = req.files.favicon[0].filename;
+
+                if(fs.existsSync(`./src/uploads/admin/${olddata.favicon}`)){
+                    fs.unlinkSync(`./src/uploads/admin/${olddata.favicon}`);
+                }
+            }
+
+            if(req.files.footer_icon) {
+                data.footer_icon = req.files.footer_icon[0].filename;
+
+                if(fs.existsSync(`./src/uploads/admin/${olddata.footer_icon}`)){
+                    fs.unlinkSync(`./src/uploads/admin/${olddata.footer_icon}`);
+                }
+            }
+
+
+            if(req.files.thumbnail) {
+                data.thumbnail = req.files.thumbnail[0].filename;
+
+                if(fs.existsSync(`./src/uploads/admin/${olddata.thumbnail}`)){
+                    fs.unlinkSync(`./src/uploads/admin/${olddata.thumbnail}`);
+                }
+            }
+        }
+
+        const response = await Admin.updateOne(
+            req.params,
+            {
+                $set: data
+            }
+        );
+        // console.log(req.files);
+        res.status(200).json({message: 'success', data: response});
+    }
+    catch(error){
+        console.log(error);
         res.status(500).json({message: 'internal server error'});
     }
 }
 
 
+
+
 module.exports = {
     testAdmin,
     registerAdmin,
-    adminLogin
+    adminLogin,
+    updateAdmin
 }
