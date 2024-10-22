@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, CSSProperties } from "react";
 import { RiFacebookFill } from "react-icons/ri";
 import { CiInstagram } from "react-icons/ci";
 import { FaYoutube } from "react-icons/fa";
@@ -9,15 +9,32 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import ClipLoader from "react-spinners/ClipLoader";
 
+const override: CSSProperties = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+  position:'fixed',
+    top:'50%',
+    left:'50%',
+    transform:'translate(-50%, -50%)'
+};
 
 function Profile() {
   const nav = useNavigate();
+
+  let [loading, setLoading] = useState(false);
+  let [color, setColor] = useState("#ffffff");
+
+
 
   const [show, setShow] = useState(false);
 
   const [admin, setAdmin] = useState({});
   const [imgPre, setImgPre] = useState({});
+  const [sentOtp, setSentOtp] = useState(false);
+  const [otpBtnText, setOtpBtnText] = useState('Genrate OTP')
 
   useEffect(() => {
     const adminData = JSON.parse(Cookies.get('admin_109'));
@@ -62,7 +79,7 @@ function Profile() {
         }).then((result) => {
           Cookies.remove('admin_109');
           nav('/');
-         
+
         });
       })
       .catch((error) => {
@@ -70,8 +87,52 @@ function Profile() {
       })
   };
 
+  const handleGenrateOtp = () => {
+    setLoading(true);
+    axios.post(`${process.env.REACT_APP_API_URL}/api/admin-panel/admin/genrate-otp`, { email: admin.email })
+      .then((response) => {
+        console.log(response.data);
+        setLoading(false);
+
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "OTP has been sent to current email",
+          showConfirmButton: false,
+          timer: 600
+        });
+
+        setSentOtp(true)
+
+        let counter = 10;
+
+        setOtpBtnText(`Regenrate OTP in ${counter}s`);
+
+        const timeIntervel = setInterval(() => {
+          counter--;
+          setOtpBtnText(`Regenrate OTP in ${counter}s`);
+
+          if (counter < 1) {
+            clearInterval(timeIntervel);
+            setOtpBtnText('Genrate OTP');
+            setSentOtp(false)
+          }
+        }, 1000);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
+
+  };
+
   return (
     <div>
+      <div className={`w-[100vw] h-[100vh] bg-[rgba(0,0,0,0.6)] fixed top-0 left-0` } 
+      style={{
+        display: (!loading) ? 'none' : 'block'
+      }}
+      ></div>
       <div className="w-[90%] mx-auto mt-[140px] mb-[20px] bg-white border rounded-[10px]">
         <span className="block text-[#303640] bg-[#f8f8f9] rounded-[10px_10px_0_0] h-[60px] p-[15px_15px] box-border font-bold text-[25px] border-b">
           Profile
@@ -242,37 +303,57 @@ function Profile() {
                 className="w-full border h-[35px] rounded-[5px] p-2 input"
               />
             </div>
-            <div className="w-full mb-[10px]">
-              <span className="block m-[15px_0]">OTP</span>
+            <button
+              type="button"
+              onClick={handleGenrateOtp}
+              disabled={sentOtp}
+              className={`px-3 h-[40px] ${(sentOtp) ? 'bg-blue-300' : 'bg-blue-600'} rounded-md text-white  my-[30px]`}>
+              {otpBtnText}
+            </button>
+            <div className="w-full mb-[10px]" style={
+              {
+                display: (sentOtp) ? '' : 'none'
+              }
+            }>
               <input
                 type="text"
                 placeholder="Enter OTP"
                 name='userotp'
 
-                className="w-full border h-[35px] rounded-[5px] p-2 input"
+                className="w-full border h-[35px] rounded-[5px] p-2 input my-2"
               />
               <input
                 type="text"
                 placeholder="Enter new email"
                 name='newemail'
 
-                className="w-full border h-[35px] rounded-[5px] p-2 input"
+                className="w-full border h-[35px] rounded-[5px] p-2 input my-2"
               />
+
+              <button
+
+                type="button"
+
+                className={`w-[150px] block h-[40px] rounded-md text-white bg-[#5351c9]  my-[30px]`}>
+                Update Email
+              </button>
             </div>
-            <button
-              type="button"
 
-              className={`w-[150px] h-[40px] rounded-md text-white  my-[30px]`}>
-              {'otpBtnText'}
-            </button>
+            <ClipLoader
+              color={color}
+              loading={loading}
+              cssOverride={override}
+              size={150}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+              // style={{
+              //   position:'fixed',
+              //   top:'50%',
+              //   left:'50%',
+              //   transform:'translate(-50%, -50%)'
+              // }}
+            />
 
-            <button
-
-              type="button"
-
-              className={`w-[150px] block h-[40px] rounded-md text-white bg-[#5351c9]  my-[30px]`}>
-              Update Email
-            </button>
           </form>
         </div>
       </div>
