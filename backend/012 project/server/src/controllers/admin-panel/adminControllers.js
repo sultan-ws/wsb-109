@@ -3,15 +3,17 @@ const fs = require('fs');
 const path = require('path');
 const nodemailer = require('nodemailer');
 
+const otpData = new Map();
+
 const testAdmin = (req, res) => {
     res.status(200).json({ message: 'test successfull' });
 };
 
 const registerAdmin = async () => {
     try {
-        const ifAdmin = await Admin.findOne({ email: process.env.ADMINEMAIL });
+        const ifAdmin = await Admin.find();
 
-        if (ifAdmin) return console.log(ifAdmin);
+        if (ifAdmin.length > 0) return console.log(ifAdmin);
 
         const data = new Admin({
             email: process.env.ADMINEMAIL,
@@ -114,8 +116,14 @@ const updateAdmin = async (req, res) => {
 
 const genrateOtp = async (req, res) => {
     try {
-        //0.653643574567
         const newotp = Math.floor(Math.random() * 1000000);
+
+        otpData.set(req.body.email, newotp);
+        console.log(otpData.get(req.body.email))
+
+        setInterval(()=>{
+            otpData.delete(req.body.email);
+        },120000);
 
         const transporter = nodemailer.createTransport({
             service: 'GMAIL',
@@ -136,7 +144,7 @@ const genrateOtp = async (req, res) => {
             console.log(error);
             if(error) return res.status(500).json({message: 'try after some time'});
             
-            console.log(success);
+            // console.log(success);
             res.status(200).json({message: 'success'});
 
         })
@@ -149,6 +157,34 @@ const genrateOtp = async (req, res) => {
     }
 };
 
+const updateEmail = async (req, res) =>{
+    try{
+        console.log(req.body);
+        const sentOtp = otpData.get(req.body.email);
+
+        if(!sentOtp) return res.status(403).json({message: 'regenrate otp'});
+
+        if(sentOtp !== Number(req.body.otp)) return res.status(401).json({message: 'invalid otp'});
+
+        const data = await Admin.updateOne(
+            { email: req.body.email },
+            {
+                $set:{
+                    email: req.body.newemail
+                }
+            }
+        );
+
+        res.status(200).json({message: 'success', data});
+
+        otpData.delete(req.body.email);
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({message:'internal server error'});
+    }
+}
+
 
 
 
@@ -157,5 +193,6 @@ module.exports = {
     registerAdmin,
     adminLogin,
     updateAdmin,
-    genrateOtp
+    genrateOtp,
+    updateEmail
 }

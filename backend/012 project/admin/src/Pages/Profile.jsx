@@ -104,7 +104,7 @@ function Profile() {
 
         setSentOtp(true)
 
-        let counter = 10;
+        let counter = 120;
 
         setOtpBtnText(`Regenrate OTP in ${counter}s`);
 
@@ -125,6 +125,37 @@ function Profile() {
       });
 
   };
+
+  const handleUpdateEmail = ()=>{
+    axios.post(`${process.env.REACT_APP_API_URL}/api/admin-panel/admin/update-email`, admin)
+    .then((response)=>{
+      console.log(response.data);
+      let timerInterval;
+      Swal.fire({
+        title: "Email updated",
+        html: "You will be logged out in <b></b> milliseconds.",
+        timer: 1000,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+          const timer = Swal.getPopup().querySelector("b");
+          timerInterval = setInterval(() => {
+            timer.textContent = `${Swal.getTimerLeft()}`;
+          }, 100);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+        }
+      }).then((result) => {
+        Cookies.remove('admin_109');
+        nav('/');
+
+      });
+    })
+    .catch((error)=>{
+      console.log(error);
+    })
+  }
 
   return (
     <div>
@@ -318,22 +349,24 @@ function Profile() {
               <input
                 type="text"
                 placeholder="Enter OTP"
-                name='userotp'
-
+                name='otp'
+                value={admin.otp}
+                onChange={(e)=>{setAdmin({...admin, otp:e.target.value})}}
                 className="w-full border h-[35px] rounded-[5px] p-2 input my-2"
               />
               <input
                 type="text"
                 placeholder="Enter new email"
                 name='newemail'
-
+                value={admin.newemail}
+                onChange={(e)=>{setAdmin({...admin, newemail:e.target.value})}}
                 className="w-full border h-[35px] rounded-[5px] p-2 input my-2"
               />
 
               <button
 
                 type="button"
-
+                onClick={handleUpdateEmail}
                 className={`w-[150px] block h-[40px] rounded-md text-white bg-[#5351c9]  my-[30px]`}>
                 Update Email
               </button>

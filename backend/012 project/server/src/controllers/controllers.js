@@ -3,7 +3,8 @@ const {
     testAdmin,
     adminLogin,
     updateAdmin,
-    genrateOtp
+    genrateOtp,
+    updateEmail
 } = require("./admin-panel/adminControllers");
 
 //parent category controllers
@@ -42,5 +43,6 @@ module.exports = {
     createProductCategory,
     readProductCategories,
     updateAdmin,
-    genrateOtp
+    genrateOtp,
+    updateEmail
 }
