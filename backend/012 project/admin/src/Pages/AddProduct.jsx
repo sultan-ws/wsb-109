@@ -1,6 +1,39 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 const AddProduct = () => {
+
+  const [parentCategory, setParentCategory] = useState([]);
+  const [selectedParentCategory, setSelectedParentCategory] = useState('');
+  const [productCategories, setProductCategories] = useState([]);
+
+  const fetchParentCategory = ()=>{
+    axios.get(`http://localhost:4400/api/admin-panel/parent-category/active-category`)
+    .then((response) => {
+      console.log(response.data);
+      setParentCategory(response.data.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  };
+
+  const fetchProductCategories = ()=>{
+    console.log(selectedParentCategory)
+    axios.get(`http://localhost:4400/api/admin-panel/product-category/active-categories/${selectedParentCategory}`)
+    .then((response) => {
+      console.log(response.data);
+      setProductCategories(response.data.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  };
+ 
+  useEffect(()=>{fetchProductCategories();},[selectedParentCategory])
+
+  useEffect(()=>{fetchParentCategory();},[]);
+
   return (
     <div className="w-[90%] mx-auto my-[150px] bg-white rounded-[10px] border">
       <span className="block border-b bg-[#f8f8f9] text-[#303640] text-[20px] font-bold p-[8px_16px] h-[40px] rounded-[10px_10px_0_0]">
@@ -116,36 +149,40 @@ const AddProduct = () => {
               id="parent_category"
               name="parent_category"
               className="w-full input border p-2 rounded-[5px] my-[10px] cursor-pointer"
+              onChange={(e)=>{setSelectedParentCategory(e.target.value)}}
             >
-              <option value="default" selected disabled hidden>
+               <option value="default" selected>
                 --Select Parent Category--
               </option>
-              <option value="men" className="cursor-pointer">
-                Men
-              </option>
-              <option value="women" className="cursor-pointer">
-                Women
-              </option>
+               {
+                parentCategory.map((category)=>(
+                  <option value={category._id}>{category.name}</option>
+                ))
+              }
             </select>
           </div>
           <div className="w-full my-[10px]">
             <label htmlFor="product_category" className="block text-[#303640]">
               Select Product Category
             </label>
+            
             <select
               id="product_category"
               name="product_category"
               className="w-full input border p-2 rounded-[5px] my-[10px] cursor-pointer"
             >
-              <option value="default" selected disabled hidden>
+              <option value="default" selected>
                 --Select Product Category--
               </option>
-              <option value="tShirt" className="cursor-pointer">
-                T-shirt
+              {
+              productCategories.map((category)=>(
+                <option value={category._id} selected>
+                  {
+                    category.name
+                  }
               </option>
-              <option value="shirt" className="cursor-pointer">
-                Shirt
-              </option>
+              ))
+            }
             </select>
           </div>
           <div className="w-full grid grid-cols-[2fr_2fr] gap-[20px]">
@@ -161,8 +198,8 @@ const AddProduct = () => {
                 <option value="default" selected disabled hidden>
                   --Select Stock--
                 </option>
-                <option value="inStock">In Stock</option>
-                <option value="outStock">Out of Stock</option>
+                <option value={true}>In Stock</option>
+                <option value={false}>Out of Stock</option>
               </select>
             </div>
             <div>
