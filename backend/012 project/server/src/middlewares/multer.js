@@ -28,6 +28,14 @@ const uploads = (foldername)=> multer({storage: storage(foldername)})
         name:'footer_icon',
         maxCount: 1
     },
+    {
+        name:'image_animation',
+        maxCount: 1
+    },
+    {
+        name:'product_gallery',
+        maxCount: 10
+    }
 ]);
 
 module.exports = uploads;

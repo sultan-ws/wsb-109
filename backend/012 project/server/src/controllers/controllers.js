@@ -7,6 +7,12 @@ const {
     updateEmail
 } = require("./admin-panel/adminControllers");
 
+//color controllers
+const {
+    activeColors,
+    createColor
+} = require("./admin-panel/colorControllers");
+
 //parent category controllers
 const {
     readParentCategory,
@@ -27,6 +33,13 @@ const {
     readProductCategories,
     activeProductCategoryByParentCategory
 } = require("./admin-panel/productCategoryControllers");
+const { createProduct } = require("./admin-panel/productControllers");
+
+//size controllers
+const {
+    activeSizes,
+    createSize
+} = require("./admin-panel/sizeControllers");
 
 module.exports = {
     testAdmin,
@@ -46,5 +59,10 @@ module.exports = {
     updateAdmin,
     genrateOtp,
     updateEmail,
-    activeProductCategoryByParentCategory
+    activeProductCategoryByParentCategory,
+    createColor,
+    activeColors,
+    createSize,
+    activeSizes,
+    createProduct
 }
