@@ -12,6 +12,7 @@ const AddProduct = () => {
   const [sizes, setSizes] = useState([]);
   const [selectedColors, setSelectedColors] = useState(null);
   const [selectedSizes, setSelectedSizes] = useState(null);
+  const [previews, setPreviews] = useState({});
 
   const fetchParentCategory = () => {
     axios.get(`http://localhost:4400/api/admin-panel/parent-category/active-category`)
@@ -85,13 +86,18 @@ const AddProduct = () => {
   }
 
   const handlePreview = (e) => {
-    console.log(e.target.name);
+    const { name, files } = e.target;
 
-    //  if(e.target.name === 'thumbnail'){
-    //   const url = URL.createObjectURL(e.target.files[0]);
+    if(name === 'product_gallery'){
 
-    //   console.log(url);
-    //  }
+      const keys = Object.keys(files);
+      const imgArr = keys.map((key)=> URL.createObjectURL(files[key]));
+      setPreviews({...previews, [name]: imgArr});
+
+      console.log(imgArr)
+    }else{
+      setPreviews({...previews, [name]: URL.createObjectURL(files[0])});
+    }
   }
 
   const handleAddProduct = (e) => {
@@ -131,7 +137,7 @@ const AddProduct = () => {
             <input
               type="text"
               id="product_name"
-              name="product_name"
+              name="name"
               placeholder="Name"
               className="w-full input border p-2 rounded-[5px] my-[10px]"
             />
@@ -142,7 +148,7 @@ const AddProduct = () => {
             </label>
             <textarea
               id="product_desc"
-              name="product_desc"
+              name="description"
               placeholder="Description"
               rows={3}
               cols={10}
@@ -158,7 +164,7 @@ const AddProduct = () => {
             </label>
             <textarea
               id="product_short_desc"
-              name="product_short_desc"
+              name="short_description"
               placeholder="Short Description"
               rows={2}
               cols={10}
@@ -176,6 +182,12 @@ const AddProduct = () => {
               className="w-full input border rounded-[5px] my-[10px] category"
               onChange={handlePreview}
             />
+
+            {
+              previews.thumbnail && (
+                <img src={previews.thumbnail} className="w-[150px]" />
+              )
+            }
           </div>
           <div className="w-full my-[10px]">
             <label htmlFor="image_animation" className="block text-[#303640]">
@@ -185,8 +197,14 @@ const AddProduct = () => {
               type="file"
               id="image_animation"
               name="image_animation"
+              onChange={handlePreview}
               className="w-full input border rounded-[5px] my-[10px] category"
             />
+             {
+              previews.image_animation && (
+                <img src={previews.image_animation} className="w-[150px]" />
+              )
+            }
           </div>
           <div className="w-full my-[10px]">
             <label htmlFor="product_gallery" className="block text-[#303640]">
@@ -195,9 +213,21 @@ const AddProduct = () => {
             <input
               type="file"
               id="product_gallery"
-              name="product_gallery"
+              name="gallery"
+              multiple
+              onChange={handlePreview}
               className="w-full input border rounded-[5px] my-[10px] category"
             />
+
+            <div className="grid grid-cols-6 gap-2">
+              {
+                previews.product_gallery && (
+                  previews.product_gallery.map((img)=>(
+                    <img src={img} className="w-[150px]" />
+                  ))
+                )
+              }
+            </div>
           </div>
           <div className="w-full my-[10px] grid grid-cols-[2fr_2fr] gap-[20px]">
             <div>
@@ -207,7 +237,7 @@ const AddProduct = () => {
               <input
                 type="text"
                 id="product_price"
-                name="product_price"
+                name="price"
                 placeholder="Product Price"
                 className="w-full input border rounded-[5px] my-[10px] p-2"
               />
@@ -219,7 +249,7 @@ const AddProduct = () => {
               <input
                 type="text"
                 id="product_mrp"
-                name="product_mrp"
+                name="mrp"
                 placeholder="Product MRP"
                 className="w-full input border rounded-[5px] my-[10px] p-2"
               />
@@ -372,7 +402,7 @@ const AddProduct = () => {
               type="radio"
               name="status"
               id="status"
-              value="0"
+              value={true}
               className="my-[10px] mx-[20px] accent-[#5351c9]"
             />
             <span>Display</span>
@@ -380,7 +410,7 @@ const AddProduct = () => {
               type="radio"
               name="status"
               id="status"
-              value="1"
+              value={false}
               className="my-[10px] mx-[20px] accent-[#5351c9]"
               checked
             />

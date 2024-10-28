@@ -33,7 +33,7 @@ const uploads = (foldername)=> multer({storage: storage(foldername)})
         maxCount: 1
     },
     {
-        name:'product_gallery',
+        name:'gallery',
         maxCount: 10
     }
 ]);
