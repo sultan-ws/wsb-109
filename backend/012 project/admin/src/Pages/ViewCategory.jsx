@@ -184,6 +184,39 @@ const ViewCategory = () => {
       .catch((error) => {
         console.log(error);
       })
+  };
+
+
+  const handleDeletePermanent = (id)=>{
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+        axios.delete(`http://localhost:4400/api/admin-panel/parent-category/permanent-delete-category/${id}`)
+          .then((response) => {
+            console.log(response.data);
+
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success"
+            });
+            fetchCategories();
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+
+
+      }
+    });
   }
 
 
@@ -218,7 +251,7 @@ const ViewCategory = () => {
                   <td>{index + 1}</td>
                   <td>{category.name}</td>
                   <td>
-                    <MdDelete className="my-[5px] text-red-500 cursor-pointer inline" />{" "}
+                    <MdDelete className="my-[5px] text-red-500 cursor-pointer inline" onClick={()=>{handleDeletePermanent(category._id)}} />{" "}
                     |{" "}
 
                       <BiRecycle onClick={()=>{handleRecoverCategory(category._id)}} className="my-[5px] text-yellow-500 cursor-pointer inline" />

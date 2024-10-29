@@ -24,7 +24,8 @@ const {
     updateParentCategory,
     deletedParentCategory,
     recoverParentCategory,
-    activeParentCategory
+    activeParentCategory,
+    permanentDeleteParentCategory
 } = require("./admin-panel/parentCategoryControllers");
 
 // product category controllers
@@ -65,5 +66,6 @@ module.exports = {
     createSize,
     activeSizes,
     createProduct,
-    readProducts
+    readProducts,
+    permanentDeleteParentCategory
 }
