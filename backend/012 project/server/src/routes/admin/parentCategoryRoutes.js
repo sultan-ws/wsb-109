@@ -10,7 +10,8 @@ const {
     deletedParentCategory,
     recoverParentCategory,
     activeParentCategory,
-    permanentDeleteParentCategory
+    permanentDeleteParentCategory,
+    searchParentCategories
 } = require('../../controllers/controllers');
 
 const parentCategoryRouter = express.Router();
@@ -26,5 +27,6 @@ parentCategoryRouter.get('/deleted-categories', deletedParentCategory);
 parentCategoryRouter.put('/recover-category/:_id', recoverParentCategory);
 parentCategoryRouter.get('/active-category', activeParentCategory);
 parentCategoryRouter.delete('/permanent-delete-category/:_id', permanentDeleteParentCategory);
+parentCategoryRouter.get('/search-category/:key', searchParentCategories);
 
 module.exports = parentCategoryRouter;

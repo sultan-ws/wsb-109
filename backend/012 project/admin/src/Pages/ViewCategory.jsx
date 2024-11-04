@@ -219,6 +219,31 @@ const ViewCategory = () => {
     });
   }
 
+  const handleSearchCategories = (e)=>{
+    console.log(e.target.value);
+
+    if(e.target.value === '') return fetchCategories();
+
+    axios.get(`http://localhost:4400/api/admin-panel/parent-category/search-category/${e.target.value}`)
+    .then((response) => {
+      console.log(response.data);
+
+      if(response.data.data.length !== 0 ) return setCategories(response.data.data);
+
+      Swal.fire({
+        title: "No Data?",
+        text: "No match category found",
+        icon: "question"
+      });
+
+      fetchCategories();
+      
+    })
+    .catch((error)=>{
+      console.log(error);
+    })
+  };
+
 
   return (
     <div className="w-[90%] mx-auto my-[150px] bg-white rounded-[10px] border">
@@ -228,6 +253,8 @@ const ViewCategory = () => {
       </span>
       
       <Modal open={open} onClose={() => setOpen(false)} center>
+
+      
       <table className="w-full">
           <thead>
             <tr className="text-left border-b">
@@ -268,6 +295,9 @@ const ViewCategory = () => {
         </table>
       </Modal>
       <div className="w-[90%] mx-auto my-[20px]">
+      <div>
+        <input type="text" className="w-full p-2 my-2 border" onInput={handleSearchCategories} />
+      </div>
         <table className="w-full">
           <thead>
             <tr className="text-left border-b">
