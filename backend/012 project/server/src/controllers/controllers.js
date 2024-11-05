@@ -43,6 +43,12 @@ const {
     createSize
 } = require("./admin-panel/sizeControllers");
 
+// **website controllers**
+// products
+const { 
+    activeProductWebsite 
+} = require("./website/productControllers");
+
 module.exports = {
     testAdmin,
     adminLogin,
@@ -69,5 +75,6 @@ module.exports = {
     createProduct,
     readProducts,
     permanentDeleteParentCategory,
-    searchParentCategories
+    searchParentCategories,
+    activeProductWebsite
 }

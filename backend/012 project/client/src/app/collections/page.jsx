@@ -1,14 +1,32 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaRegSquareFull } from 'react-icons/fa6';
 import { SiWindows11 } from "react-icons/si";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { QuickAddButton } from '../HomeComponents/ThisJustIn';
 import Header from '../common/Header';
 import { Card } from '../common/Card';
+import axios from 'axios';
 
 export default function Category() {
-  let [settingGrid,setSettingGrid]=useState(false)
+  let [settingGrid,setSettingGrid]=useState(false);
+  const [products, setProducts] = useState([]);
+  const [filepath, setFilepath] = useState('');
+
+  const fetchProducts = ()=>{
+    axios.get('http://localhost:4400/api/website/products/active-products')
+    .then((response)=>{
+      console.log(response.data);
+      setProducts(response.data.data);
+      setFilepath(response.data.filepath);
+    })
+    .catch((error)=>{
+      console.log(error);
+      })
+  };
+
+  useEffect(()=>{fetchProducts()},[]);
+
   return (
     <>
     <Header/>
@@ -26,30 +44,12 @@ export default function Category() {
             <div className='py-6'>
             <div className='text-[20px] pb-5 font-medium'>New In</div>
             <div className={`grid ${settingGrid ? "lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3" : "lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-5" } duration-300`}>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
+                
+                {
+                  products.map((product, index)=>(
+                    <Card key={index} product={product} filepath={filepath} />
+                  ))
+                }
             </div>
             <div className='text-center mt-10'>
                 <span className='text-[14px] font-mediumtext-[#666] block'>40 of 99</span>

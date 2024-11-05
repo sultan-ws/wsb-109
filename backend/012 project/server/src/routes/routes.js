@@ -5,6 +5,7 @@ const productCategoryRouter = require('./admin/productCategoryRoutes');
 const colorRouter = require('./admin/colorRoutes');
 const sizeRouter = require('./admin/sizeRoutes');
 const productRouter = require('./admin/productRoutes');
+const websiteProductRoutes = require('./website/products');
 
 const adminPanelRoutes = express.Router();
 const websiteRoutes = express.Router();
@@ -16,6 +17,8 @@ adminPanelRoutes.use('/product-category', productCategoryRouter);
 adminPanelRoutes.use('/colors', colorRouter);
 adminPanelRoutes.use('/sizes', sizeRouter);
 adminPanelRoutes.use('/products', productRouter);
+
+websiteRoutes.use('/products', websiteProductRoutes);
 
 module.exports = {
     adminPanelRoutes,
