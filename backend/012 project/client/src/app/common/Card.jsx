@@ -1,18 +1,30 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { QuickAddButton } from "../HomeComponents/ThisJustIn"
 
 export function Card({product, filepath}) {
-    let [quickAdd,setQuickAdd]=useState(false)
+    let [quickAdd,setQuickAdd]=useState(false);
+    const [selectedColor, setSelectedColor] = useState('');
+
+    useEffect(()=>{setSelectedColor(product.colors[0]._id)},[product]);
+
   return (
     <div className='cursor-pointer group'>
                 <div className=' w-full h-full'>
                     <div className='group relative'>
                     <span className='bg-black text-white absolute right-2 top-2 z-[9999] text-[8px] sm:text-[10px] font-medium uppercase px-0.5 sm:px-1 py-0.5'>few left</span>
                     <img className='h-full w-full object-cover' src="/images/buttonUpSweater.webp" alt="Womens Denim" />
-                    <img className='h-full w-full duration-300 z-[999] absolute top-0 group-hover:block hidden object-cover' src="/images/buttonUpSweater2.webp" alt="Womens Denim" />
-                    <button onClick={()=>setQuickAdd(true)} className={`${setQuickAdd ? <QuickAddButton/> : ""} w-[95%] text-center box-border bg-white py-3 text-[14px] font-medium absolute bottom-2 translate-x-[-50%] left-[50%]  group-hover:block hidden`}>Quick Add
+                    <img className='h-full w-full duration-300 z-[49] absolute top-0 group-hover:block hidden object-cover' src="/images/buttonUpSweater2.webp" alt="Womens Denim" />
+                    <button onClick={()=>setQuickAdd(true)} className={`${setQuickAdd ? <QuickAddButton/> : ""} w-[95%] text-center box-border bg-white py-3 text-[14px] font-medium absolute z-50 bottom-2 translate-x-[-50%] left-[50%]  group-hover:block group`}>Quick Add
+
+                    <div className="w-full  grid-cols-5 gap-2 group-hover:grid hidden h-full absolute left-0 bottom-0 bg-black">
+                      {
+                        product.sizes.map((size, index)=> (
+                          <button key={index} className={`text-white hover:bg-white hover:text-black order-[${size.order}]`}>{size.name}</button>
+                        ))
+                      }
+                    </div>
                     </button>
                     </div>
                 <h5 className='sm:text-[14px] text-[12px] flex gap-3 mt-2 font-semibold'>{product.name}
@@ -25,11 +37,21 @@ export function Card({product, filepath}) {
                   <div className="line-through text-[gray]">₹ {product.mrp}</div>
                   <div>{(((product.mrp - product.price) * 100)/ product.mrp).toFixed(2)}% Off</div>
                 </div>
-                <span className='group-hover:hidden sm:text-[16px] text-[12px] block'>1 color</span>
+                <span className='group-hover:hidden sm:text-[16px] text-[12px] block'>{product.colors.length} colors</span>
                 <div className='group-hover:block hidden mt-1'>
-                <div className='sm:w-5 sm:h-5 h-3 w-3 rounded-full border border-black flex items-center justify-center'>
-                <svg xmlns="http://www.w3.org/2000/svg" className='sm:w-3.5 sm:h-3.5 h-1.5 w-1.5' viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
-                </div>
+               <div className="flex gap-1">
+                {
+                  product.colors.map((color, index)=>(
+                    <div key={index} className={`sm:w-5 sm:h-5 h-3 w-3 ${(selectedColor === color._id) ? 'border-double border-4' : ''} rounded-full border  border-black`}
+                    onClick={()=>setSelectedColor(color._id)}
+                     style={{
+                      backgroundColor:color.code
+                    }}>
+                
+                    </div>
+                  ))
+                }
+               </div>
                 </div>
                 </div>
             </div>
