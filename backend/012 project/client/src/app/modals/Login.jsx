@@ -1,11 +1,17 @@
 "use client"
+
 import { IoCloseSharp } from "react-icons/io5";
 import { FaFacebookF } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
 import { BsArrowRight } from "react-icons/bs";
 import { useState } from "react";
 import axios from "axios";
+import Cookies from "js-cookie";
+import { useRouter } from "next/router";
+
 export default function Login({ loginStatus, setLoginStatus }) {
+
+
   let [compStatus, setCompStatus] = useState(true);
 
 
@@ -76,6 +82,8 @@ function LoginBox() {
 
 
 function SignUpBox({ setCompStatus, compStatus }) {
+  // const nav = useRouter();
+  
   const [user, setUser] = useState({});
   const [regexError, setRegexError] = useState({});
 
@@ -114,14 +122,30 @@ function SignUpBox({ setCompStatus, compStatus }) {
     if (ifErrors) return;
 
     axios.post('http://localhost:4400/api/website/user/genrate-otp', user)
-    .then((response)=>{
-      console.log(response.data);
-     
-    })
-    .catch((error)=>{
-      console.log(error);
+      .then((response) => {
+        console.log(response.data);
+
       })
-  }
+      .catch((error) => {
+        console.log(error);
+      })
+  };
+
+  const handleRegisterUser = () =>{
+    axios.post('http://localhost:4400/api/website/user/register-user', user)
+      .then((response) => {
+        console.log(response.data);
+
+        Cookies.set('frank_user_109', JSON.stringify(response.data.data));
+
+        // nav.push('/');
+
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+  };
+
   return (
     <form method="post">
       <div className="flex flex-col gap-3 py-6">
@@ -130,29 +154,29 @@ function SignUpBox({ setCompStatus, compStatus }) {
         </div>
         <div className="py-5 border-t border-gray-300">
           <div className="grid grid-cols-2 gap-5 mb-3">
-           <div>
-           {regexError.name && (<span className="text-red-600 text-[12px]">{regexError.name}</span>)}
-            <input
-              name='firstname'
-              className="p-3 border text-[#757575] text-[14px] font-semibold border-[#757575] "
-              type="text"
-              onChange={(e) => { setUser({ ...user, firstname: e.target.value }) }}
-              placeholder="First Name" />
-           </div>
+            <div>
+              {regexError.name && (<span className="text-red-600 text-[12px]">{regexError.name}</span>)}
+              <input
+                name='firstname'
+                className="p-3 border text-[#757575] text-[14px] font-semibold border-[#757575] "
+                type="text"
+                onChange={(e) => { setUser({ ...user, firstname: e.target.value }) }}
+                placeholder="First Name" />
+            </div>
 
-           <div>
-           {regexError.lastname && (<span className="text-red-600 text-[12px]">{regexError.lastname}</span>)}
-            <input name='lastname'
-              onChange={(e) => { setUser({ ...user, lastname: e.target.value }) }}
-              className="p-3 border text-[#757575] text-[14px] font-semibold border-[#757575] " type="text" placeholder="Last Name" />
-           </div>
+            <div>
+              {regexError.lastname && (<span className="text-red-600 text-[12px]">{regexError.lastname}</span>)}
+              <input name='lastname'
+                onChange={(e) => { setUser({ ...user, lastname: e.target.value }) }}
+                className="p-3 border text-[#757575] text-[14px] font-semibold border-[#757575] " type="text" placeholder="Last Name" />
+            </div>
           </div>
           <div className="flex flex-col gap-3">
-          {regexError.email && (<span className="text-red-600 text-[12px]">{regexError.email}</span>)}
+            {regexError.email && (<span className="text-red-600 text-[12px]">{regexError.email}</span>)}
             <input name="email"
               onChange={(e) => { setUser({ ...user, email: e.target.value }) }}
               className="p-3 border text-[#757575] text-[14px] font-semibold border-[#757575] " type="text" placeholder="Email Address" />
-              {regexError.password && (<span className="text-red-600 text-[12px]">{regexError.password}</span>)}
+            {regexError.password && (<span className="text-red-600 text-[12px]">{regexError.password}</span>)}
             <input name="password"
               onChange={(e) => { setUser({ ...user, password: e.target.value }) }}
               className="p-3 border text-[#757575] text-[14px] font-semibold border-[#757575] " type="tel" placeholder="Password" />
@@ -175,7 +199,14 @@ function SignUpBox({ setCompStatus, compStatus }) {
                 Yes, sign me up to the Frank And Oak newsletter to never miss out on product launches and exclusive promotions.
               </label>
             </div> */}
+
+              <input name="otp"
+                onChange={(e) => { setUser({ ...user, otp: e.target.value }) }}
+                className="p-3 border text-[#757575] text-[14px] font-semibold border-[#757575] " type="otp" placeholder="OTP" />
+
               <button type="button" onClick={handleGeanrateOtp} className="p-3.5 mt-4 w-full bg-black text-white font-semibold">Genarate OTP</button>
+
+              <button type="button" onClick={handleRegisterUser} className="p-3.5 mt-4 w-full bg-black text-white font-semibold">Genarate OTP</button>
             </div>
           </div>
         </div>
