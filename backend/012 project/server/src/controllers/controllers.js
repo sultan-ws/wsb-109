@@ -48,7 +48,7 @@ const {
 const { 
     activeProductWebsite 
 } = require("./website/productControllers");
-const { genrateOtpUser } = require("./website/userControllers");
+const { genrateOtpUser, registerUser } = require("./website/userControllers");
 
 module.exports = {
     testAdmin,
@@ -78,5 +78,6 @@ module.exports = {
     permanentDeleteParentCategory,
     searchParentCategories,
     activeProductWebsite,
-    genrateOtpUser
+    genrateOtpUser,
+    registerUser
 }

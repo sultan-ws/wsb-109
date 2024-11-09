@@ -1,8 +1,9 @@
 const express = require('express');
-const { genrateOtpUser } = require('../../controllers/controllers');
+const { genrateOtpUser, registerUser } = require('../../controllers/controllers');
 
 const userRouter = express.Router();
 
 userRouter.post('/genrate-otp', genrateOtpUser);
+userRouter.post('/register-user', registerUser);
 
 module.exports = userRouter;

@@ -1,13 +1,29 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { QuickAddButton } from "../HomeComponents/ThisJustIn"
+import { QuickAddButton } from "../HomeComponents/ThisJustIn";
+import Cookies from "js-cookie";
 
 export function Card({product, filepath}) {
     let [quickAdd,setQuickAdd]=useState(false);
     const [selectedColor, setSelectedColor] = useState('');
 
     useEffect(()=>{setSelectedColor(product.colors[0]._id)},[product]);
+
+    const handleAddToCart = (e)=>{
+      const cookiedata = Cookies.get('frank_user_109');
+      if(!cookiedata) return alert('Please log in');
+      const {_id} = JSON.parse(cookiedata);
+      
+      const data = {
+        user: _id,
+        product: product._id,
+        color: selectedColor,
+        size:e.target.value
+      };
+
+      console.log(data);
+    }
 
   return (
     <div className='cursor-pointer group'>
@@ -21,7 +37,7 @@ export function Card({product, filepath}) {
                     <div className="w-full  grid-cols-5 gap-2 group-hover:grid hidden h-full absolute left-0 bottom-0 bg-black">
                       {
                         product.sizes.map((size, index)=> (
-                          <button key={index} className={`text-white hover:bg-white hover:text-black order-[${size.order}]`}>{size.name}</button>
+                          <button value={size._id} onClick={handleAddToCart} key={index} className={`text-white hover:bg-white hover:text-black order-[${size.order}]`}>{size.name}</button>
                         ))
                       }
                     </div>

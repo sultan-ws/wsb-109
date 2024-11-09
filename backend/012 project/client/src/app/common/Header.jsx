@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { RxHamburgerMenu } from "react-icons/rx";
 import { CiSearch } from "react-icons/ci";
 import { FaRegUserCircle } from "react-icons/fa";
@@ -11,11 +11,20 @@ import MobileSideBar from '../modals/MobileSideBar';
 import Link from 'next/link';
 import { MenMegaMenu, OurStoryMegaMenu, ThisJustInMegaMenu, WomenMegaMenu } from './MegaMenu';
 import TextSlider from './TextSlider';
+import { useDispatch } from 'react-redux';
+import { fetchProducts } from '../redux/slices/productSlice';
 export default function Header() {
   let [loginStatus,setLoginStatus]=useState(false)
   let [cartStatus,setCartStatus]=useState(false)
   let [menuHover,setMenuHover]=useState(0)
-  let [sidebarStatus,setSidebarStatus]=useState(false)
+  let [sidebarStatus,setSidebarStatus]=useState(false);
+
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    console.log('header loaded');
+    dispatch(fetchProducts());
+  },[dispatch]);
   
   return (
     <div className='fixed top-0 z-[999999] w-full'>

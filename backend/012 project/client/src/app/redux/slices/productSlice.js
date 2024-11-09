@@ -1,39 +1,49 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import axios from 'axios';
-
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 export const fetchProducts = createAsyncThunk(
-    'products/fetchProducts',
-    async(_, thunkApi) => {
+      'products/fetchProducts',
+      async(_, thunkApi) =>{
         try{
-            const response = await axios.get('http://localhost:4400/api/website/products/active-products');
-            return response.data.data;
+          const response = await axios.get('http://localhost:4400/api/website/products/active-products');
+          return response.data;
         }
         catch(error){
-            return thunkApi.rejectWithValue(error.message)
+          return thunkApi.rejectWithValue(error.message);
         }
-    }
-)
+      }
+);
 
-const initialState = {
-  value: [],
+const intialValue = {
+  value:{},
   loading:false,
-  error: null
+  error:null
 };
 
-
 export const productSlice = createSlice({
-    name: 'products',
-    initialState,
-    reducers: {
-      setProducts : (state, action) => {
-        state.value = action.payload;
-      }
-    },
-    
-  })
-  
-  // Action creators are generated for each case reducer function
-  export const { } = productSlice.actions
-  
-  export default productSlice.reducer;
+  name:'products',
+  initialState:intialValue,
+  reducers:{
+    chanegValue :(state, action)=>{
+      state.value = action.payload;
+    }
+  },
+  extraReducers:(builder) => {
+    builder
+    .addCase(fetchProducts.pending, (state, action)=>{
+      state.loading = true;
+      console.log('pending');
+    })
+    .addCase(fetchProducts.fulfilled, (state, action)=>{
+      state.loading = false;
+      state.value = action.payload;
+    })
+    .addCase(fetchProducts.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      console.log('error', action.payload);
+    })
+  }
+});
+export const {chanegValue} = productSlice.actions;
+export default productSlice.reducer;

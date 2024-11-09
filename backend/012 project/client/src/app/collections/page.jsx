@@ -7,25 +7,22 @@ import { QuickAddButton } from '../HomeComponents/ThisJustIn';
 import Header from '../common/Header';
 import { Card } from '../common/Card';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 export default function Category() {
   let [settingGrid, setSettingGrid] = useState(false);
   const [products, setProducts] = useState([]);
   const [filepath, setFilepath] = useState('');
 
-  const fetchProducts = () => {
-    axios.get('http://localhost:4400/api/website/products/active-products')
-      .then((response) => {
-        console.log(response.data);
-        setProducts(response.data.data);
-        setFilepath(response.data.filepath);
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-  };
+  const productData = useSelector((state)=> state.products.value);
 
-  useEffect(() => { fetchProducts() }, []);
+  useEffect(()=>{
+    if(!productData.data) return;
+    setProducts(productData.data);
+    setFilepath(productData.filepath);
+  },[productData]);
+
+
 
   return (
     <>
