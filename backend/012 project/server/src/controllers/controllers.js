@@ -42,6 +42,7 @@ const {
     activeSizes,
     createSize
 } = require("./admin-panel/sizeControllers");
+const { createCart, readCart } = require("./website/cartControllers");
 
 // **website controllers**
 // products
@@ -79,5 +80,7 @@ module.exports = {
     searchParentCategories,
     activeProductWebsite,
     genrateOtpUser,
-    registerUser
+    registerUser,
+    createCart,
+    readCart
 }

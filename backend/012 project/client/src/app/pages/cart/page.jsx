@@ -4,17 +4,34 @@ import { MdClose } from "react-icons/md";
 import { CiHeart } from "react-icons/ci";
 import { IoLockClosedOutline } from "react-icons/io5";
 import Link from "next/link";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 export default function Cart({cartStatus,setCartStatus}) {
+
+  const cartData = useSelector((state)=> state.cart.value);
+  console.log(cartData)
+
+
+  const [cartProducts, setCartProducts] = useState([]);
+  const [filepath, setFilepath] = useState('');
+
+  useEffect(()=>{
+    setCartProducts(cartData.data);
+    console.log(cartData)
+  },[cartData]);
+
 
   const childFunction = ()=>{
     console.log('child funciton called');
   }
+
+
   return (
     <>
     <section className={`${cartStatus ? "opacity-100 visible" : "opacity-0 invisible"} duration-500`}>
     <div className="bg-[rgba(0,0,0,0.6)] border border-red-700 fixed top-0 z-[9999999] w-full min-h-screen">
       <div className='lg:w-[38%] w-full  fixed top-0 right-0 z-[999999] bg-white'>
-        <div onClick={()=>setCartStatus(!cartStatus)} className='py-3 px-6 flex items-center gap-2 bg-[#F9F9F9] cursor-pointer'>
+        <div onClick={()=>{setCartStatus()}} className='py-3 px-6 flex items-center gap-2 bg-[#F9F9F9] cursor-pointer'>
           <BsArrowLeft className='font-bold' />
           <div className='text-sm font-semibold'>Contine Shopping</div>
         </div>

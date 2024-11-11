@@ -3,10 +3,14 @@
 import { useEffect, useState } from "react"
 import { QuickAddButton } from "../HomeComponents/ThisJustIn";
 import Cookies from "js-cookie";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../redux/slices/cartSlice";
 
 export function Card({product, filepath}) {
     let [quickAdd,setQuickAdd]=useState(false);
     const [selectedColor, setSelectedColor] = useState('');
+    const dispatch = useDispatch();
+
 
     useEffect(()=>{setSelectedColor(product.colors[0]._id)},[product]);
 
@@ -22,7 +26,7 @@ export function Card({product, filepath}) {
         size:e.target.value
       };
 
-      console.log(data);
+      dispatch(addToCart(data));
     }
 
   return (

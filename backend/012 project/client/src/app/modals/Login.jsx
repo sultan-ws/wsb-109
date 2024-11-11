@@ -7,7 +7,7 @@ import { BsArrowRight } from "react-icons/bs";
 import { useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function Login({ loginStatus, setLoginStatus }) {
 
@@ -82,7 +82,7 @@ function LoginBox() {
 
 
 function SignUpBox({ setCompStatus, compStatus }) {
-  // const nav = useRouter();
+  const nav = useRouter();
   
   const [user, setUser] = useState({});
   const [regexError, setRegexError] = useState({});
@@ -138,7 +138,7 @@ function SignUpBox({ setCompStatus, compStatus }) {
 
         Cookies.set('frank_user_109', JSON.stringify(response.data.data));
 
-        // nav.push('/');
+        nav.push('/');
 
       })
       .catch((error) => {
