@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { QuickAddButton } from "../HomeComponents/ThisJustIn";
 import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../redux/slices/cartSlice";
+import { addToCart, fetchCart } from "../redux/slices/cartSlice";
 
 export function Card({product, filepath}) {
     let [quickAdd,setQuickAdd]=useState(false);
@@ -27,6 +27,7 @@ export function Card({product, filepath}) {
       };
 
       dispatch(addToCart(data));
+      dispatch(fetchCart(_id));
     }
 
   return (

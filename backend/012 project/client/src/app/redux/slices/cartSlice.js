@@ -29,6 +29,37 @@ export const fetchCart = createAsyncThunk(
     }
 );
 
+export const deleteCart = createAsyncThunk(
+    'cart/deleteCart',
+    async(id, thunkApi)=>{
+        try{
+            const response = await axios.delete(`http://localhost:4400/api/website/cart/delete-cart/${id}`,);
+            return response.data;
+        }
+        catch(error){
+            console.log(error);
+            return thunkApi.rejectWithValue(error.message);
+        }
+    }
+);
+
+
+export const updateCart = createAsyncThunk(
+    'cart/updateCart',
+    async(data, thunkApi)=>{
+        try{
+            const response = await axios.delete(`http://localhost:4400/api/website/cart/delete-cart/${data._id}`,{
+                newQuentity: data.newQuentity
+            });
+            return response.data;
+        }
+        catch(error){
+            console.log(error);
+            return thunkApi.rejectWithValue(error.message);
+        }
+    }
+);
+
 const initialState = {
     value:{},
     loading:false,

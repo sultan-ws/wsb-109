@@ -11,7 +11,7 @@ import MobileSideBar from '../modals/MobileSideBar';
 import Link from 'next/link';
 import { MenMegaMenu, OurStoryMegaMenu, ThisJustInMegaMenu, WomenMegaMenu } from './MegaMenu';
 import TextSlider from './TextSlider';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../redux/slices/productSlice';
 import { fetchCart } from '../redux/slices/cartSlice';
 import Cookies from 'js-cookie';
@@ -21,14 +21,29 @@ export default function Header() {
   let [cartStatus, setCartStatus] = useState(false)
   let [menuHover, setMenuHover] = useState(0)
   let [sidebarStatus, setSidebarStatus] = useState(false);
+  const [cartLength, setCartLength] = useState(null);
 
   const dispatch = useDispatch();
+
+  const cartItems = useSelector((state)=>state.cart.value);
+
+  useEffect(()=>{
+    if(cartItems.data){
+      let totalItems = 0; 
+
+      cartItems.data.forEach((item)=>{
+        totalItems += item.quentity;
+      });
+
+      setCartLength(totalItems);
+    }
+  },[cartItems])
+
 
   useEffect(() => {
     const cookiedata = Cookies.get('frank_user_109');
     if (!cookiedata) return alert('Please log in');
     const { _id } = JSON.parse(cookiedata);
-    console.log('header loaded');
     dispatch(fetchProducts());
 
     dispatch(fetchCart(_id));
@@ -75,8 +90,9 @@ export default function Header() {
                 <FaRegHeart className='sm:w-[22px] sm:h-7 h-5 w-[18px] cursor-pointer' />
               </Link>
             </li>
-            <li className='cursor-pointer' onClick={() => setCartStatus(true)}>
-              <BsBagPlus className='sm:w-[22px] sm:h-7 h-5 w-[18px]' />
+            <li className='cursor-pointer relative' onClick={() => setCartStatus(true)}>
+              <BsBagPlus className='sm:w-[22px] sm:h-7 h-5 w-[18px]' /> 
+              <div className='absolute bottom-[56%] left-[96%] text-[14px]'>{cartLength}</div>
               <Cart cartStatus={cartStatus} setCartStatus={() => (setCartStatus(false))} />
             </li>
           </ul>

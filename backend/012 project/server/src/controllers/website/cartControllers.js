@@ -33,7 +33,38 @@ const readCart = async (req, res) => {
         .populate('color')
         .populate('product');
 
-        res.status(200).json({message: 'success', data});
+        const filepath = `${req.protocol}://${req.get('host')}/frankandoak-files/`;
+
+        res.status(200).json({message: 'success', data, filepath});
+    }
+    catch(error){
+        console.error(error);
+        res.status(500).json({message: 'internal server error'});
+    }
+}
+
+const updateCart = async (req, res) => {
+    try{
+        const data = await Cart.updateOne(
+            req.params,
+            {
+                $set:{
+                    quentity: req.body.newQuentity
+                }
+            }
+        );
+        res.status(200).json({message:'success', data});
+    }
+    catch(error){
+        console.error(error);
+        res.status(500).json({message: 'internal server error'});
+    }
+};
+
+const deleteCart = async (req, res) => {
+    try{
+        const data = await Cart.deleteOne(req.params);
+        res.status(200).json({message:'success', data});
     }
     catch(error){
         console.error(error);
@@ -43,5 +74,7 @@ const readCart = async (req, res) => {
 
 module.exports = {
     createCart,
-    readCart
+    readCart,
+    updateCart,
+    deleteCart
 }
