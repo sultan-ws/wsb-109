@@ -90,8 +90,8 @@ export default function Header() {
                 <FaRegHeart className='sm:w-[22px] sm:h-7 h-5 w-[18px] cursor-pointer' />
               </Link>
             </li>
-            <li className='cursor-pointer relative' onClick={() => setCartStatus(true)}>
-              <BsBagPlus className='sm:w-[22px] sm:h-7 h-5 w-[18px]' /> 
+            <li className='cursor-pointer relative'>
+              <BsBagPlus className='sm:w-[22px] sm:h-7 h-5 w-[18px]'  onClick={() => setCartStatus(true)}/> 
               <div className='absolute bottom-[56%] left-[96%] text-[14px]'>{cartLength}</div>
               <Cart cartStatus={cartStatus} setCartStatus={() => (setCartStatus(false))} />
             </li>

@@ -34,6 +34,7 @@ export const deleteCart = createAsyncThunk(
     async(id, thunkApi)=>{
         try{
             const response = await axios.delete(`http://localhost:4400/api/website/cart/delete-cart/${id}`,);
+           
             return response.data;
         }
         catch(error){
@@ -48,9 +49,10 @@ export const updateCart = createAsyncThunk(
     'cart/updateCart',
     async(data, thunkApi)=>{
         try{
-            const response = await axios.delete(`http://localhost:4400/api/website/cart/delete-cart/${data._id}`,{
+            const response = await axios.put(`http://localhost:4400/api/website/cart/update-cart/${data._id}`,{
                 newQuentity: data.newQuentity
             });
+            fetchCart();
             return response.data;
         }
         catch(error){

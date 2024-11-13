@@ -4,8 +4,11 @@ import { MdClose } from "react-icons/md";
 import { CiHeart } from "react-icons/ci";
 import { IoLockClosedOutline } from "react-icons/io5";
 import Link from "next/link";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import { deleteCart, fetchCart, updateCart } from "@/app/redux/slices/cartSlice";
+import Cookies from "js-cookie";
+
 export default function Cart({cartStatus,setCartStatus}) {
 
   const cartData = useSelector((state)=> state.cart.value);
@@ -38,13 +41,14 @@ export default function Cart({cartStatus,setCartStatus}) {
     console.log('child funciton called');
   }
 
+ 
 
   return (
     <>
     <section className={`${cartStatus ? "opacity-100 visible" : "opacity-0 invisible"} duration-500`}>
     <div className="bg-[rgba(0,0,0,0.6)] border border-red-700 fixed top-0 z-[9999999] w-full min-h-screen">
       <div className='lg:w-[38%] w-full  fixed top-0 right-0 z-[999999] bg-white'>
-        <div onClick={()=>{setCartStatus()}} className='py-3 px-6 flex items-center gap-2 bg-[#F9F9F9] cursor-pointer'>
+        <div onClick={setCartStatus} className='py-3 px-6 flex items-center gap-2 bg-[#F9F9F9] cursor-pointer'>
           <BsArrowLeft className='font-bold' />
           <div className='text-sm font-semibold'>Contine Shopping</div>
         </div>
@@ -76,6 +80,37 @@ export default function Cart({cartStatus,setCartStatus}) {
 }
 
 function CartProducts({product, filepath}) {
+
+  const [quantity, setQuantity] = useState(null);
+
+  useEffect(()=>{setQuantity(product.quentity)},[product]);
+  
+  const dispatch = useDispatch();
+
+  const updateCartData = (e)=>{
+    const cookiedata = Cookies.get('frank_user_109');
+    if(!cookiedata) return alert('Please log in');
+    const {_id} = JSON.parse(cookiedata);
+
+    console.log('update cart data called', e.target.value, e.target.textContent, quantity);
+
+
+    if(quantity === 1 && e.target.textContent === '-'){
+      dispatch(deleteCart(e.target.value));
+      dispatch(fetchCart(_id));   
+      
+      return
+    }
+
+    const newQuentity = (e.target.textContent === '+') ? (quantity + 1) : (quantity - 1);
+    setQuantity(newQuentity);
+
+    console.log({_id: e.target.value, newQuentity })
+    dispatch(updateCart({_id: e.target.value, newQuentity }));
+    dispatch(fetchCart(_id)); 
+
+  }
+
   return (
     <div className='grid grid-cols-[25%_auto] gap-3 py-5 border-b border-customBorder'>
             <img className='w-full' src={filepath + product.product.thumbnail} alt="" />
@@ -90,9 +125,9 @@ function CartProducts({product, filepath}) {
               </div>
               <div className='flex items-center justify-between'>
                 <div className=''>
-                  <button className='px-2.5 py-0.5 text--[20px] border border-customBorder'>-</button>
-                  <button className='px-2.5 py-0.5 border border-customBorder'>{product.quentity}</button>
-                  <button className='px-2.5 py-0.5 text--[20px] border border-customBorder'>+</button>
+                  <button className='px-2.5 py-0.5 text--[20px] border border-customBorder' value={product._id} onClick={updateCartData}>-</button>
+                  <button className='px-2.5 py-0.5 border border-customBorder'>{quantity}</button>
+                  <button className='px-2.5 py-0.5 text--[20px] border border-customBorder' value={product._id} onClick={updateCartData}>+</button>
                 </div>
                 <div className='text-[15px] font-semibold'>₹ {product.product.price}</div>
               </div>

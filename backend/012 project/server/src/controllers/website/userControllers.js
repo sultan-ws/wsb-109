@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 const User = require('../../models/user');
+const jwt = require('jsonwebtoken');
 
 const otpData = new Map();
 
@@ -95,9 +96,15 @@ const registerUser = async(req, res) => {
 
         const data = await dataToSave.save();
 
-        const {password, ...dataWithoutPassword} = data._doc
+        const {password, ...dataWithoutPassword} = data._doc;
 
-        res.status(200).json({message: 'success', data: dataWithoutPassword});
+        jwt.sign(dataWithoutPassword, process.env.JWT_KEY, {expiresIn: 7}, (error, token)=>{
+            if(error) return res.status(500).json({messaghe:'try aftr some time'});
+
+            res.status(200).json({message: 'success', data:dataWithoutPassword, token});
+        });
+
+       
 
         otpData.delete(req.body.email);
     }

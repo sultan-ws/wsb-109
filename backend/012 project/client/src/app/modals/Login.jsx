@@ -137,6 +137,7 @@ function SignUpBox({ setCompStatus, compStatus }) {
         console.log(response.data);
 
         Cookies.set('frank_user_109', JSON.stringify(response.data.data));
+        Cookies.set('frank_user_109_token',response.data.token);
 
         nav.push('/');
 
