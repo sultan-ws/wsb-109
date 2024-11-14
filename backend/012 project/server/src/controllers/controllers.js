@@ -49,7 +49,7 @@ const { createCart, readCart, updateCart, deleteCart } = require("./website/cart
 const { 
     activeProductWebsite 
 } = require("./website/productControllers");
-const { genrateOtpUser, registerUser } = require("./website/userControllers");
+const { genrateOtpUser, registerUser, verifyUser } = require("./website/userControllers");
 
 module.exports = {
     testAdmin,
@@ -84,5 +84,6 @@ module.exports = {
     createCart,
     readCart,
     updateCart,
-    deleteCart
+    deleteCart,
+    verifyUser
 }

@@ -98,7 +98,7 @@ const registerUser = async(req, res) => {
 
         const {password, ...dataWithoutPassword} = data._doc;
 
-        jwt.sign(dataWithoutPassword, process.env.JWT_KEY, {expiresIn: 7}, (error, token)=>{
+        jwt.sign(dataWithoutPassword, process.env.JWT_KEY, {expiresIn: '7d'}, (error, token)=>{
             if(error) return res.status(500).json({messaghe:'try aftr some time'});
 
             res.status(200).json({message: 'success', data:dataWithoutPassword, token});
@@ -114,7 +114,26 @@ const registerUser = async(req, res) => {
     }
 }
 
+const verifyUser = async (req, res) => {
+    try{
+        const auth = req.headers.authorization;
+
+        jwt.verify(auth, process.env.JWT_KEY, (error, decode)=>{
+            console.log('error', error)
+            if(error) return res.status(401).json({message:'plaese login again'});
+
+            res.status(200).json({message:'success', data: decode});
+        });
+        
+    }
+    catch(error){
+        console.log(error)
+        res.status(500).json({message:'success'});
+    }
+}
+
 module.exports = {
     genrateOtpUser,
-    registerUser
+    registerUser,
+    verifyUser
 }

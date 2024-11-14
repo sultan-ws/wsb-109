@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../redux/slices/productSlice';
 import { fetchCart } from '../redux/slices/cartSlice';
 import Cookies from 'js-cookie';
+import axios from 'axios';
 
 export default function Header() {
   let [loginStatus, setLoginStatus] = useState(false)
@@ -26,6 +27,24 @@ export default function Header() {
   const dispatch = useDispatch();
 
   const cartItems = useSelector((state)=>state.cart.value);
+
+  //check login
+  useEffect(()=>{
+    const cookiedata = Cookies.get('frank_user_109_token');
+    if(!cookiedata) return;
+
+    axios.post('http://localhost:4400/api/website/user/verify-login',{name:'avinash'},{
+      headers:{
+        'Authorization':cookiedata
+      }
+    })
+    .then((response)=>{
+      console.log('verify', response.data);
+    })
+    .catch((error)=>{
+      console.log('error', error);
+    })
+  },[]);
 
   useEffect(()=>{
     if(cartItems.data){
