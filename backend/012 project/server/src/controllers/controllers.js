@@ -43,6 +43,7 @@ const {
     createSize
 } = require("./admin-panel/sizeControllers");
 const { createCart, readCart, updateCart, deleteCart } = require("./website/cartControllers");
+const { chekOut } = require("./website/checkOutControllers");
 
 // **website controllers**
 // products
@@ -85,5 +86,6 @@ module.exports = {
     readCart,
     updateCart,
     deleteCart,
-    verifyUser
+    verifyUser,
+    chekOut
 }

@@ -1,9 +1,50 @@
 "use client"
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { IoBagHandleOutline } from "react-icons/io5";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
+import { useSelector } from "react-redux";
 export default function Checkout() {
   let [orderSummary,setOrderSummary]=useState(false)
+  const [cartData, setCartData] = useState([]);
+  const [filepath, setFilepath ] = useState('');
+
+  const cart = useSelector((state)=> state.cart.value);
+  const [cartLength, setCartLength] = useState(null);
+  const [totalPrice, setTotalPrice] = useState(null);
+
+  const [address, setAddress] = useState({});
+
+  useEffect(()=>{
+    if(cart.data) setCartData(cart.data);
+    if(cart.filepath) setFilepath(cart.filepath);
+    if(cart.data) setCartLength(cart.data.length);
+
+    if(cart.data) {
+      let sum = 0;
+      cart.data.forEach((item) => {
+        sum += item.quentity * item.product.price
+      });
+
+      console.log('sum=>',sum);
+  
+      setTotalPrice(sum);
+    }
+  },[cart]);
+
+  const handleCheckout = ()=>{
+    axios.post(`http://localhost:4400/api/website/payment/checkout`, {
+      cart,
+      address
+    })
+    .then((response)=>{
+      console.log(response)
+    })
+    .catch((error)=>{
+      console.log(error);
+    })
+  }
+
   return (
     <>
       <header className="w-full border-b border-customBorder py-2 font-Poppins">
@@ -124,6 +165,7 @@ export default function Checkout() {
             <div className="space-y-4 py-5">
               <h4 className="font-semibold text-[20px]">Delivery</h4>
               <select
+              onChange={(e)=>{setAddress({...address, country: e.target.value})}}
                 className="w-full rounded-md py-3 text-sm border-customBorder focus:ring-customBorder"
                 name="country"
                 id="country"
@@ -134,6 +176,8 @@ export default function Checkout() {
               <div className="grid grid-cols-2 gap-2">
               <div class="relative">
                   <input
+                  onChange={(e)=>{setAddress({...address, firstname: e.target.value})}}
+                  name="firstname"
                     type="text"
                     id="floating_filled"
                     class="block rounded-md px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900  appearance-none  focus:outline-none focus:ring-0 peer border border-customBorder"
@@ -148,6 +192,8 @@ export default function Checkout() {
                 </div>
                 <div class="relative">
                   <input
+                  onChange={(e)=>{setAddress({...address, lastname: e.target.value})}}
+                  name="lastname"
                     type="text"
                     id="floating_filled"
                     class="block rounded-md px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900  appearance-none  focus:outline-none focus:ring-0 peer border border-customBorder"
@@ -163,7 +209,9 @@ export default function Checkout() {
               </div>
               <div class="relative">
                 <input
-                  type="Search"
+                onChange={(e)=>{setAddress({...address, line1: e.target.value})}}
+                  name="line1"
+                  type="text"
                   id="floating_outlined"
                   class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=""
@@ -178,6 +226,8 @@ export default function Checkout() {
               <div>
               <div class="relative">
                   <input
+                  onChange={(e)=>{setAddress({...address, line2: e.target.value})}}
+                  name="line2"
                     type="text"
                     id="floating_filled"
                     class="block rounded-md px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900  appearance-none  focus:outline-none focus:ring-0 peer border border-customBorder"
@@ -194,6 +244,8 @@ export default function Checkout() {
               <div className="grid grid-cols-3 gap-3">
                 <div class="relative">
                   <input
+                  onChange={(e)=>{setAddress({...address, state: e.target.value})}}
+                  name="state"
                     type="text"
                     id="floating_filled"
                     class="block rounded-md px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900  appearance-none  focus:outline-none focus:ring-0 peer border border-customBorder"
@@ -203,10 +255,13 @@ export default function Checkout() {
                     for="floating_filled"
                     class="absolute text-sm  duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] start-2.5 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
                   >
-                    City
+                    State
                   </label>
                 </div>
-                <select className="w-full rounded-md py-3 text-sm border-customBorder focus:ring-customBorder" name="state" id="state">
+                <select 
+                onChange={(e)=>{setAddress({...address, city: e.target.value})}}
+                  name="city"
+                className="w-full rounded-md py-3 text-sm border-customBorder focus:ring-customBorder" name="state" id="state">
                   <option value="Prayagraj">Prayagraj</option>
                   <option value="Prayagraj">Prayagraj</option>
                   <option value="Prayagraj">Prayagraj</option>
@@ -215,6 +270,8 @@ export default function Checkout() {
                 </select>
                 <div class="relative">
                   <input
+                  onChange={(e)=>{setAddress({...address, postal_code: e.target.value})}}
+                  name="postal_code"
                     type="text"
                     id="floating_filled"
                     class="block rounded-md px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900  appearance-none  focus:outline-none focus:ring-0 peer border border-customBorder"
@@ -230,6 +287,8 @@ export default function Checkout() {
               </div>
               <div class="relative">
                   <input
+                  onChange={(e)=>{setAddress({...address, phone: e.target.value})}}
+                  name="phone"
                     type="text"
                     id="floating_filled"
                     class="block rounded-md px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900  appearance-none  focus:outline-none focus:ring-0 peer border border-customBorder"
@@ -277,7 +336,7 @@ export default function Checkout() {
               </div>
             </div>
             </div>
-            <button className="bg-black text-white rounded-md w-full  font-semibold py-5" type="submit">Pay Now</button>
+            <button onClick={handleCheckout} type="button" className="bg-black text-white rounded-md w-full  font-semibold py-5">Pay Now</button>
             <div className="border-t border-customBorder mt-20">
               <div className="flex gap-3 py-3">
                 <p className="text-sm font-normal underline">Refund policy</p>
@@ -287,119 +346,42 @@ export default function Checkout() {
             </div>
           </form>
         </div>
-        <div className={`lg:block ${orderSummary ? "block" : "hidden"} h-screen duration-200 bg-[#F4F8F7] p-10 lg:order-2 order-1`}>
+        <div className={`lg:block ${orderSummary ? "block" : "hidden"} overflow-x-scroll h-screen duration-200 bg-[#F4F8F7] p-10 lg:order-2 order-1`}>
           <div className="lg:w-[75%] w-full">
             <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <figure className="relative border bg-[#E8F0EE] border-customBorder rounded-md px-2">
-                  <img
-                    src="https://cdn.shopify.com/s/files/1/0555/5722/6653/files/1910082-002.3037_64x64.jpg?v=1726773509"
-                    alt=""
-                  />
-                  <div className="absolute right-[-12%] top-[-12%] w-[20px] h-[20px] rounded-full text-[12px]  text-white bg-[#6B6D6D] flex justify-center items-center">
-                    2
+              {
+                cartData.map((cartProduct, index)=>(
+                  <div key={index} className="flex items-center gap-3">
+                  <figure className="relative border bg-[#E8F0EE] border-customBorder rounded-md px-2">
+                    <img
+                    className="w-[40px]"
+                      src={filepath + cartProduct.product.thumbnail}
+                      alt=""
+                    />
+                    <div className="absolute right-[-12%] top-[-12%] w-[20px] h-[20px] rounded-full text-[12px]  text-white bg-[#6B6D6D] flex justify-center items-center">
+                      {cartProduct.quentity}
+                    </div>
+                  </figure>
+                  <div className="flex items-center w-[80%] py-3 justify-between gap-5">
+                    <div>
+                      <h6 className="text-sm font-normal">
+                        {cartProduct.product.name}
+                      </h6>
+                      <span className="text-[12px] font-normal text-[#0000008f]">
+                      {cartProduct.size.name}
+                      </span>
+                    </div>
+                    <div className="text-sm font-normal">
+                      ₹ <span>{cartProduct.product.price} x </span>
+                      <span>{cartProduct.quentity} = </span>
+                      <span>₹ {cartProduct.product.price * cartProduct.quentity}</span>
+                      </div>
                   </div>
-                </figure>
-                <div className="flex items-center w-[80%] py-3 justify-between gap-5">
-                  <div>
-                    <h6 className="text-sm font-normal">
-                      The Classic Tie in Black
-                    </h6>
-                    <span className="text-[12px] font-normal text-[#0000008f]">
-                      One Size
-                    </span>
-                  </div>
-                  <div className="text-sm font-normal">$39.50</div>
                 </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <figure className="relative border bg-[#E8F0EE] border-customBorder rounded-md px-2">
-                  <img
-                    src="https://cdn.shopify.com/s/files/1/0555/5722/6653/files/1910082-002.3037_64x64.jpg?v=1726773509"
-                    alt=""
-                  />
-                  <div className="absolute right-[-12%] top-[-12%] w-[20px] h-[20px] rounded-full text-[12px]  text-white bg-[#6B6D6D] flex justify-center items-center">
-                    2
-                  </div>
-                </figure>
-                <div className="flex items-center w-[80%] py-3 justify-between gap-5">
-                  <div>
-                    <h6 className="text-sm font-normal">
-                      The Classic Tie in Black
-                    </h6>
-                    <span className="text-[12px] font-normal text-[#0000008f]">
-                      One Size
-                    </span>
-                  </div>
-                  <div className="text-sm font-normal">$39.50</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <figure className="relative border bg-[#E8F0EE] border-customBorder rounded-md px-2">
-                  <img
-                    src="https://cdn.shopify.com/s/files/1/0555/5722/6653/files/1910082-002.3037_64x64.jpg?v=1726773509"
-                    alt=""
-                  />
-                  <div className="absolute right-[-12%] top-[-12%] w-[20px] h-[20px] rounded-full text-[12px]  text-white bg-[#6B6D6D] flex justify-center items-center">
-                    2
-                  </div>
-                </figure>
-                <div className="flex items-center w-[80%] py-3 justify-between gap-5">
-                  <div>
-                    <h6 className="text-sm font-normal">
-                      The Classic Tie in Black
-                    </h6>
-                    <span className="text-[12px] font-normal text-[#0000008f]">
-                      One Size
-                    </span>
-                  </div>
-                  <div className="text-sm font-normal">$39.50</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <figure className="relative border bg-[#E8F0EE] border-customBorder rounded-md px-2">
-                  <img
-                    src="https://cdn.shopify.com/s/files/1/0555/5722/6653/files/1910082-002.3037_64x64.jpg?v=1726773509"
-                    alt=""
-                  />
-                  <div className="absolute right-[-12%] top-[-12%] w-[20px] h-[20px] rounded-full text-[12px]  text-white bg-[#6B6D6D] flex justify-center items-center">
-                    2
-                  </div>
-                </figure>
-                <div className="flex items-center w-[80%] py-3 justify-between gap-5">
-                  <div>
-                    <h6 className="text-sm font-normal">
-                      The Classic Tie in Black
-                    </h6>
-                    <span className="text-[12px] font-normal text-[#0000008f]">
-                      One Size
-                    </span>
-                  </div>
-                  <div className="text-sm font-normal">$39.50</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <figure className="relative border bg-[#E8F0EE] border-customBorder rounded-md px-2">
-                  <img
-                    src="https://cdn.shopify.com/s/files/1/0555/5722/6653/files/1910082-002.3037_64x64.jpg?v=1726773509"
-                    alt=""
-                  />
-                  <div className="absolute right-[-12%] top-[-12%] w-[20px] h-[20px] rounded-full text-[12px]  text-white bg-[#6B6D6D] flex justify-center items-center">
-                    2
-                  </div>
-                </figure>
-                <div className="flex items-center w-[80%] py-3 justify-between gap-5">
-                  <div>
-                    <h6 className="text-sm font-normal">
-                      The Classic Tie in Black
-                    </h6>
-                    <span className="text-[12px] font-normal text-[#0000008f]">
-                      One Size
-                    </span>
-                  </div>
-                  <div className="text-sm font-normal">$39.50</div>
-                </div>
-              </div>
+                ))
+              }
+             
+              
             </div>
             <div className="border-t border-[#E3E3E3] py-5 mt-5">
               {/* <form className="grid grid-cols-[80%_auto] gap-4">
@@ -414,8 +396,8 @@ export default function Checkout() {
               </form> */}
               <div className="pt-5 space-y-3">
                 <div className="flex justify-between ">
-                  <div className="text-sm font-normal">Subtotal • 7 items</div>
-                  <div className="text-sm font-normal">$336.50</div>
+                  <div className="text-sm font-normal">Subtotal • {cartLength} items</div>
+                  <div className="text-sm font-normal">₹ {totalPrice}</div>
                 </div>
                 {/* <div className="flex justify-between">
                   <div className="text-sm font-normal">Shipping</div>
@@ -427,9 +409,9 @@ export default function Checkout() {
                   <div className=" text-[19px] font-semibold">Total</div>
                   <div className="font-semibold  text-[19px]">
                     <span className="text-sm text-[#0000008f] font-normal">
-                      USD
+       
                     </span>{" "}
-                    $336.50
+                    ₹ {totalPrice}
                   </div>
                 </div>
               </div>

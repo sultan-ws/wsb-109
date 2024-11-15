@@ -8,6 +8,7 @@ const productRouter = require('./admin/productRoutes');
 const websiteProductRoutes = require('./website/products');
 const userRouter = require('./website/users');
 const cartRouter = require('./website/cartRoutes');
+const paymentRouter = require('./website/paymentRoutes');
 
 const adminPanelRoutes = express.Router();
 const websiteRoutes = express.Router();
@@ -23,6 +24,7 @@ adminPanelRoutes.use('/products', productRouter);
 websiteRoutes.use('/products', websiteProductRoutes);
 websiteRoutes.use('/user', userRouter);
 websiteRoutes.use('/cart', cartRouter);
+websiteRoutes.use('/payment', paymentRouter);
 
 module.exports = {
     adminPanelRoutes,
