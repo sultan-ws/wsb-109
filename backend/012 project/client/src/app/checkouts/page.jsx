@@ -1,4 +1,5 @@
 "use client"
+import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { IoBagHandleOutline } from "react-icons/io5";
@@ -39,6 +40,16 @@ export default function Checkout() {
     })
     .then((response)=>{
       console.log(response)
+
+      loadStripe('pk_test_51LiyTNSH4QsKt7gApjEgxNySurOKQbOlLuc0XxwsqJek8ItuUyPQLIwIThhZ7Q4Ut7dYzWkrlg15v5kgV2opUJF6002wEvois3')
+      .then((stripe)=>{
+        stripe.redirectToCheckout({
+          sessionId: response.data.session
+        })
+      })
+      .catch((error)=>{
+        console.log(error)
+      })
     })
     .catch((error)=>{
       console.log(error);
